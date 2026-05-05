@@ -49,6 +49,8 @@ export const users = pgTable("users", {
   theme: varchar("theme", { length: 10 }).notNull().default("dark"),
   isActive: boolean("is_active").notNull().default(true),
   isBanned: boolean("is_banned").notNull().default(false),
+  loginStreak: integer("login_streak").notNull().default(0),
+  lastLoginDate: varchar("last_login_date", { length: 10 }), // YYYY-MM-DD
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => ({
@@ -92,6 +94,8 @@ export const markets = pgTable("markets", {
   creatorId: uuid("creator_id").references(() => users.id), // null for admin-created
   listingFeePaid: boolean("listing_fee_paid").notNull().default(false),
   lmsrLiquidity: integer("lmsr_liquidity").notNull().default(100), // LMSR b parameter
+  qYes: integer("q_yes").notNull().default(0),
+  qNo: integer("q_no").notNull().default(0),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => ({
@@ -169,4 +173,33 @@ export const auditLog = pgTable("audit_log", {
 }, (t) => ({
   actorIdx: index("audit_actor_idx").on(t.actorId),
   actionIdx: index("audit_action_idx").on(t.action),
+}));
+
+// ─── Push Tokens ─────────────────────────────────────────────────────────────
+
+export const pushTokens = pgTable("push_tokens", {
+  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: uuid("user_id").notNull().references(() => users.id),
+  token: varchar("token", { length: 512 }).notNull(),
+  platform: varchar("platform", { length: 10 }).notNull(), // "ios" | "android"
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => ({
+  userIdx: index("push_tokens_user_idx").on(t.userId),
+  tokenIdx: uniqueIndex("push_tokens_token_idx").on(t.token),
+}));
+
+// ─── AI Insight Signals ───────────────────────────────────────────────────────
+
+export const aiInsightSignals = pgTable("ai_insight_signals", {
+  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+  marketId: uuid("market_id").notNull().references(() => markets.id),
+  suggestedProbability: integer("suggested_probability").notNull(), // 1–99
+  confidence: integer("confidence").notNull(), // 1–5 stars
+  keyFactors: text("key_factors").notNull(), // JSON string of string[]
+  sourceUrls: text("source_urls").notNull(), // JSON string of string[]
+  sentimentScore: integer("sentiment_score"), // -100 to 100 from HuggingFace
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => ({
+  marketIdx: index("ai_signals_market_idx").on(t.marketId),
+  marketCreatedIdx: index("ai_signals_market_created_idx").on(t.marketId, t.createdAt),
 }));
