@@ -6,6 +6,7 @@ import { authRoutes } from "./modules/auth/auth.routes";
 import { subscriptionRoutes } from "./modules/subscriptions/subscriptions.routes";
 import { fpLedgerRoutes } from "./modules/fp-ledger/fp-ledger.routes";
 import { marketRoutes } from "./modules/markets/markets.routes";
+import { forecastRoutes } from "./modules/forecast/forecast.routes";
 
 export async function buildApp(opts: { logger?: boolean } = {}): Promise<FastifyInstance> {
   const app = Fastify({ logger: opts.logger ?? true });
@@ -31,6 +32,8 @@ export async function buildApp(opts: { logger?: boolean } = {}): Promise<Fastify
   await app.register(fpLedgerRoutes);
 
   await app.register(marketRoutes);
+
+  await app.register(forecastRoutes);
 
   return app;
 }
