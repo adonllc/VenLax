@@ -38,4 +38,21 @@ describe("LMSR pricing engine", () => {
     expect(lmsrProbability(b, 10000, 0)).toBeLessThan(1);
     expect(lmsrProbability(b, 0, 10000)).toBeGreaterThan(0);
   });
+
+  it("returns 0 shares when fpAmount is 0", () => {
+    expect(lmsrSharesForFp(b, 0, 0, 0, "yes")).toBe(0);
+  });
+
+  it("returns 0 shares when 1 share costs more than fpAmount", () => {
+    // At extreme qYes, the cost of 1 more Yes share > 1 FP
+    const shares = lmsrSharesForFp(b, 10000, 0, 0.001, "yes");
+    expect(shares).toBe(0);
+  });
+
+  it("path-independence: cost(0→10) + cost(10→20) === cost(0→20)", () => {
+    const leg1 = lmsrCost(b, 0, 0, 10, "yes");
+    const leg2 = lmsrCost(b, 10, 0, 10, "yes");
+    const direct = lmsrCost(b, 0, 0, 20, "yes");
+    expect(leg1 + leg2).toBeCloseTo(direct, 8);
+  });
 });

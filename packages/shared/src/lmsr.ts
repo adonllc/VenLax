@@ -20,6 +20,7 @@ export function lmsrCost(
   shares: number,
   side: "yes" | "no"
 ): number {
+  if (b <= 0) throw new Error("LMSR liquidity parameter b must be positive");
   const newQYes = side === "yes" ? qYes + shares : qYes;
   const newQNo = side === "no" ? qNo + shares : qNo;
   const before = logSumExp(qYes / b, qNo / b);
@@ -35,6 +36,7 @@ export function lmsrCost(
  * IEEE 754 double precision would otherwise saturate to 0 or 1.
  */
 export function lmsrProbability(b: number, qYes: number, qNo: number): number {
+  if (b <= 0) throw new Error("LMSR liquidity parameter b must be positive");
   // softmax with numerical stabilisation
   const yScaled = qYes / b;
   const nScaled = qNo / b;
@@ -67,6 +69,10 @@ export function lmsrSharesForFp(
   fpAmount: number,
   side: "yes" | "no"
 ): number {
+  if (b <= 0) throw new Error("LMSR liquidity parameter b must be positive");
+  if (fpAmount <= 0) return 0;
+  if (lmsrCost(b, qYes, qNo, 1, side) > fpAmount) return 0;
+
   let lo = 1;
   // Upper bound: even the cheapest possible share costs > 0 FP, so the
   // number of shares is at most fpAmount / (minimum marginal FP per share).
@@ -87,7 +93,7 @@ export function lmsrSharesForFp(
       hi = mid - 1;
     }
   }
-  return Math.max(1, lo);
+  return lo;
 }
 
 // ─── Internal helpers ─────────────────────────────────────────────────────────
