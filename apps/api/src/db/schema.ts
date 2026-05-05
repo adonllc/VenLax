@@ -42,6 +42,7 @@ export const users = pgTable("users", {
   subscriptionTier: subscriptionTierEnum("subscription_tier").notNull().default("free"),
   stripeCustomerId: varchar("stripe_customer_id", { length: 50 }),
   stripeSubscriptionId: varchar("stripe_subscription_id", { length: 50 }),
+  passwordHash: varchar("password_hash", { length: 256 }),
   xpLevel: xpLevelEnum("xp_level").notNull().default("rookie"),
   xpTotal: integer("xp_total").notNull().default(0),
   reputationScore: integer("reputation_score").notNull().default(0),
