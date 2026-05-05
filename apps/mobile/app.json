@@ -1,0 +1,20 @@
+{
+  "expo": {
+    "name": "VenlaxIQ",
+    "slug": "venlaxiq",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "scheme": "venlaxiq",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.venlaxiq"
+    },
+    "android": {
+      "adaptiveIcon": {},
+      "package": "com.venlaxiq"
+    },
+    "plugins": ["expo-router"]
+  }
+}
