@@ -1,0 +1,164 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: timescale/timescaledb:latest-pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  valkey:
+    image: valkey/valkey:7-alpine
+    restart: unless-stopped
+    command: valkey-server --requirepass ${VALKEY_PASSWORD}
+    volumes:
+      - valkey_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "valkey-cli", "--pass", "${VALKEY_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.8
+    restart: unless-stopped
+    environment:
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
+      MEILI_ENV: production
+    volumes:
+      - meili_data:/meili_data
+    ports:
+      - "7700:7700"
+
+  minio:
+    image: minio/minio:latest
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:24-alpine
+    restart: unless-stopped
+    environment:
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+    ports:
+      - "8123:8123"
+
+  postHog:
+    image: posthog/posthog:latest
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${POSTHOG_DATABASE_URL}
+      REDIS_URL: redis://:${VALKEY_PASSWORD}@valkey:6379
+      SECRET_KEY: ${POSTHOG_SECRET_KEY}
+    depends_on:
+      - postgres
+      - valkey
+    ports:
+      - "8000:8000"
+
+  grafana:
+    image: grafana/grafana:latest
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
+    volumes:
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3100:3000"
+
+  prometheus:
+    image: prom/prometheus:latest
+    restart: unless-stopped
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+
+  sentry:
+    image: getsentry/sentry:latest
+    restart: unless-stopped
+    environment:
+      SENTRY_SECRET_KEY: ${SENTRY_SECRET_KEY}
+      SENTRY_POSTGRES_HOST: postgres
+      SENTRY_DB_USER: ${POSTGRES_USER}
+      SENTRY_DB_PASSWORD: ${POSTGRES_PASSWORD}
+    depends_on:
+      - postgres
+      - valkey
+    ports:
+      - "9010:9000"
+
+  metabase:
+    image: metabase/metabase:latest
+    restart: unless-stopped
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_HOST: postgres
+      MB_DB_PORT: 5432
+      MB_DB_DBNAME: metabase
+      MB_DB_USER: ${POSTGRES_USER}
+      MB_DB_PASS: ${POSTGRES_PASSWORD}
+    depends_on:
+      - postgres
+    ports:
+      - "3200:3000"
+
+  unleash:
+    image: unleashorg/unleash-server:latest
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/unleash
+      INIT_ADMIN_API_TOKENS: ${UNLEASH_ADMIN_TOKEN}
+    depends_on:
+      - postgres
+    ports:
+      - "4242:4242"
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  postgres_data:
+  valkey_data:
+  meili_data:
+  minio_data:
+  clickhouse_data:
+  grafana_data:
+  prometheus_data:
+  sentry_data:
+  metabase_data:
+  caddy_data:
+  caddy_config:
