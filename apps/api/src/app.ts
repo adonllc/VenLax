@@ -4,6 +4,7 @@ import rateLimit from "@fastify/rate-limit";
 import jwt from "@fastify/jwt";
 import { authRoutes } from "./modules/auth/auth.routes";
 import { subscriptionRoutes } from "./modules/subscriptions/subscriptions.routes";
+import { fpLedgerRoutes } from "./modules/fp-ledger/fp-ledger.routes";
 
 export async function buildApp(opts: { logger?: boolean } = {}): Promise<FastifyInstance> {
   const app = Fastify({ logger: opts.logger ?? true });
@@ -25,6 +26,8 @@ export async function buildApp(opts: { logger?: boolean } = {}): Promise<Fastify
   await app.register(authRoutes);
 
   await app.register(subscriptionRoutes);
+
+  await app.register(fpLedgerRoutes);
 
   return app;
 }
