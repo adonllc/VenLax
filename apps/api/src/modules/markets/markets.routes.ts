@@ -6,6 +6,10 @@ import { createMarket, listMarkets, getMarket, changeMarketStatus } from "./mark
 export async function marketRoutes(app: FastifyInstance) {
   app.get("/markets", async (request, reply) => {
     const { status } = request.query as { status?: string };
+    const validStatuses = ["draft", "open", "closed", "resolved", "settled"];
+    if (status && !validStatuses.includes(status)) {
+      return reply.code(400).send({ error: `Invalid status. Must be one of: ${validStatuses.join(", ")}` });
+    }
     return reply.send(await listMarkets(status));
   });
 
