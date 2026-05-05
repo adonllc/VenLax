@@ -32,26 +32,7 @@ export async function enterForecast(userId: string, input: EnterForecastInput) {
       throw { statusCode: 409, message: `Open position limit reached (${tierConfig.maxOpenPositions} for your tier)` };
     }
 
-    // 4. Check daily_forecast FP balance
-    const balanceRows = await tx
-      .select({ total: sum(fpLedger.amount).mapWith(Number) })
-      .from(fpLedger)
-      .where(and(
-        eq(fpLedger.userId, userId),
-        eq(fpLedger.poolType, "daily_forecast"),
-        or(isNull(fpLedger.expiresAt), gt(fpLedger.expiresAt, sql`NOW()`)),
-      ));
-    const balance = balanceRows[0]?.total ?? 0;
-    if (balance < input.fpAmount) {
-      throw { statusCode: 409, message: "Insufficient FP balance" };
-    }
-
-    // 5. Compute shares via LMSR
-    const b = market.lmsrLiquidity;
-    const shares = lmsrSharesForFp(b, market.qYes, market.qNo, input.fpAmount, input.side);
-    const priceAtEntry = Math.round(lmsrProbability(b, market.qYes, market.qNo) * 100);
-
-    // 6. Debit FP from daily_forecast pool
+    // 4. Debit FP from daily_forecast pool first (debit-first pattern eliminates TOCTOU race)
     await tx.insert(fpLedger).values({
       userId,
       poolType: "daily_forecast",
@@ -60,6 +41,25 @@ export async function enterForecast(userId: string, input: EnterForecastInput) {
       referenceId: input.marketId,
       expiresAt: null,
     });
+
+    // 5. Verify post-debit balance is still >= 0 (same tx sees the debit we just inserted)
+    const postDebitBalance = await tx
+      .select({ total: sum(fpLedger.amount).mapWith(Number) })
+      .from(fpLedger)
+      .where(and(
+        eq(fpLedger.userId, userId),
+        eq(fpLedger.poolType, "daily_forecast"),
+        or(isNull(fpLedger.expiresAt), gt(fpLedger.expiresAt, sql`NOW()`)),
+      ));
+    const balance = postDebitBalance[0]?.total ?? 0;
+    if (balance < 0) {
+      throw { statusCode: 409, message: "Insufficient FP balance" };
+    }
+
+    // 6. Compute shares via LMSR
+    const b = market.lmsrLiquidity;
+    const shares = lmsrSharesForFp(b, market.qYes, market.qNo, input.fpAmount, input.side);
+    const priceAtEntry = Math.round(lmsrProbability(b, market.qYes, market.qNo) * 100);
 
     // 7. Create position
     const [pos] = await tx.insert(forecastPositions).values({
