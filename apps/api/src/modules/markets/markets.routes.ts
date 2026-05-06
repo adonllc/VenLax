@@ -6,6 +6,8 @@ import { db } from "../../db";
 import { markets } from "../../db/schema";
 import { eq } from "drizzle-orm";
 import { settlementQueue } from "../../queue";
+import { getLatestSignal } from "../ai/insight.service";
+import { db as dbInstance } from "../../db";
 
 export async function marketRoutes(app: FastifyInstance) {
   app.get("/markets", async (request, reply) => {
@@ -61,5 +63,21 @@ export async function marketRoutes(app: FastifyInstance) {
     await settlementQueue.add("settle-market", { marketId: id }, { delay: 1000 });
 
     return reply.send(resolved);
+  });
+
+  app.get("/markets/:id/insight", { preHandler: [authenticate] }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const { tier } = request.user as { tier: string };
+    if (tier === "free") {
+      return reply.code(403).send({ error: "AI Insight Signals require a Pro or Elite subscription" });
+    }
+    const signal = await getLatestSignal(dbInstance, id);
+    if (!signal) return reply.code(404).send({ error: "No insight signal available yet" });
+    return reply.send({
+      ...signal,
+      keyFactors: JSON.parse(signal.keyFactors),
+      sourceUrls: JSON.parse(signal.sourceUrls),
+      disclaimer: "Not financial advice. For educational purposes only.",
+    });
   });
 }
