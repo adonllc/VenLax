@@ -1,4 +1,4 @@
-import { eq, and } from "drizzle-orm";
+import { eq, and, inArray } from "drizzle-orm";
 import { markets, forecastPositions, fpLedger, users, auditLog } from "../../db/schema";
 import { TIER_CONFIG, SubscriptionTier } from "@venlaxiq/shared";
 import type { DB } from "../../db";
@@ -11,7 +11,7 @@ export async function settleMarket(db: DB, marketId: string): Promise<void> {
     throw new Error("Market has no resolved outcome");
   }
 
-  const winSide = market.resolvedOutcome; // true = Yes wins, false = No wins
+  const winSide = market.resolvedOutcome;
 
   const positions = await db.query.forecastPositions.findMany({
     where: and(
@@ -21,40 +21,51 @@ export async function settleMarket(db: DB, marketId: string): Promise<void> {
     ),
   });
 
-  for (const position of positions) {
-    const isWinner = position.side === winSide;
-    let fpEarned = 0;
+  // Batch-fetch all users for winning positions (eliminates N+1)
+  const winnerUserIds = [...new Set(
+    positions.filter(p => p.side === winSide).map(p => p.userId)
+  )];
+  const winnerUsers = winnerUserIds.length > 0
+    ? await db.query.users.findMany({ where: inArray(users.id, winnerUserIds) })
+    : [];
+  const userMap = new Map(winnerUsers.map(u => [u.id, u]));
 
-    if (isWinner) {
-      const user = await db.query.users.findFirst({ where: eq(users.id, position.userId) });
-      const tier = (user?.subscriptionTier ?? "free") as SubscriptionTier;
-      const multiplier = TIER_CONFIG[tier].accuracyMultiplier;
-      fpEarned = Math.round(position.shares * 100 * multiplier);
+  await db.transaction(async (tx) => {
+    for (const position of positions) {
+      const isWinner = position.side === winSide;
+      let fpEarned = 0;
 
-      const fpExpiryDays = TIER_CONFIG[tier].fpExpiryDays;
-      await db.insert(fpLedger).values({
-        userId: position.userId,
-        poolType: "earned",
-        amount: fpEarned,
-        reason: "forecast_earned",
-        referenceId: position.id,
-        expiresAt: new Date(Date.now() + fpExpiryDays * 86400000),
-      });
+      if (isWinner) {
+        const user = userMap.get(position.userId);
+        const tier = (user?.subscriptionTier ?? "free") as SubscriptionTier;
+        const multiplier = TIER_CONFIG[tier].accuracyMultiplier;
+        fpEarned = Math.round(position.shares * 100 * multiplier);
+
+        const fpExpiryDays = TIER_CONFIG[tier].fpExpiryDays;
+        await tx.insert(fpLedger).values({
+          userId: position.userId,
+          poolType: "earned",
+          amount: fpEarned,
+          reason: "forecast_earned",
+          referenceId: position.id,
+          expiresAt: new Date(Date.now() + fpExpiryDays * 86400000),
+        });
+      }
+
+      await tx.update(forecastPositions)
+        .set({ isSettled: true, fpEarned })
+        .where(eq(forecastPositions.id, position.id));
     }
 
-    await db.update(forecastPositions)
-      .set({ isSettled: true, fpEarned })
-      .where(eq(forecastPositions.id, position.id));
-  }
+    await tx.update(markets)
+      .set({ status: "settled", updatedAt: new Date() })
+      .where(eq(markets.id, marketId));
 
-  await db.update(markets)
-    .set({ status: "settled", updatedAt: new Date() })
-    .where(eq(markets.id, marketId));
-
-  await db.insert(auditLog).values({
-    action: "market_settled",
-    targetType: "market",
-    targetId: marketId,
-    metadata: JSON.stringify({ totalPositions: positions.length, winSide }),
+    await tx.insert(auditLog).values({
+      action: "market_settled",
+      targetType: "market",
+      targetId: marketId,
+      metadata: JSON.stringify({ totalPositions: positions.length, winSide }),
+    });
   });
 }
