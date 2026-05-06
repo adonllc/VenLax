@@ -9,7 +9,7 @@ export async function startWorkers(): Promise<void> {
   await scheduleInsightJobs();
 
   process.on("SIGTERM", async () => {
-    await Promise.all([
+    await Promise.allSettled([
       settlementWorker.close(),
       aiWorker.close(),
       insightWorker.close(),
