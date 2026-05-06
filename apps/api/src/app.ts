@@ -7,6 +7,7 @@ import { subscriptionRoutes } from "./modules/subscriptions/subscriptions.routes
 import { fpLedgerRoutes } from "./modules/fp-ledger/fp-ledger.routes";
 import { marketRoutes } from "./modules/markets/markets.routes";
 import { forecastRoutes } from "./modules/forecast/forecast.routes";
+import { reviewRoutes } from "./modules/reviews/reviews.routes";
 import { websocketPlugin } from "./plugins/websocket";
 
 export async function buildApp(opts: { logger?: boolean } = {}): Promise<FastifyInstance> {
@@ -37,6 +38,8 @@ export async function buildApp(opts: { logger?: boolean } = {}): Promise<Fastify
   await app.register(marketRoutes);
 
   await app.register(forecastRoutes);
+
+  await app.register(reviewRoutes);
 
   return app;
 }
