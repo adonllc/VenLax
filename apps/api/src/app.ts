@@ -7,11 +7,14 @@ import { subscriptionRoutes } from "./modules/subscriptions/subscriptions.routes
 import { fpLedgerRoutes } from "./modules/fp-ledger/fp-ledger.routes";
 import { marketRoutes } from "./modules/markets/markets.routes";
 import { forecastRoutes } from "./modules/forecast/forecast.routes";
+import { websocketPlugin } from "./plugins/websocket";
 
 export async function buildApp(opts: { logger?: boolean } = {}): Promise<FastifyInstance> {
   const app = Fastify({ logger: opts.logger ?? true });
 
   await app.register(cors, { origin: true });
+
+  await app.register(websocketPlugin);
 
   await app.register(rateLimit, {
     max: 100,

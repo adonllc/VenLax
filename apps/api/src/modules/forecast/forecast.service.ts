@@ -4,6 +4,7 @@ import { eq, and, sum, isNull, or, gt, sql } from "drizzle-orm";
 import { lmsrProbability, lmsrSharesForFp } from "@venlaxiq/shared";
 import { TIER_CONFIG, SubscriptionTier } from "@venlaxiq/shared";
 import type { EnterForecastInput } from "./forecast.schema";
+import { broadcastMarketProbability } from "../markets/market.broadcaster";
 
 export async function enterForecast(userId: string, input: EnterForecastInput) {
   const position = await db.transaction(async (tx) => {
@@ -81,8 +82,8 @@ export async function enterForecast(userId: string, input: EnterForecastInput) {
     return pos;
   });
 
-  // Broadcast new probability outside transaction (non-blocking, wired in Task 5)
-  // broadcastMarketProbability(input.marketId).catch(() => {});
+  // Broadcast new probability outside transaction (non-blocking)
+  broadcastMarketProbability(input.marketId).catch(() => {});
 
   return position;
 }
