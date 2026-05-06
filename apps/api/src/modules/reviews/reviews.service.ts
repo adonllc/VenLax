@@ -15,7 +15,11 @@ export async function submitReview(userId: string, input: SubmitReviewInput) {
     badge: "none",
   }).returning();
 
-  await aiQueue.add("score-review", { reviewId: review.id, userId });
+  try {
+    await aiQueue.add("score-review", { reviewId: review.id, userId });
+  } catch {
+    // Queue unavailable — review is persisted, scoring will be retried separately
+  }
 
   return review;
 }
@@ -32,39 +36,43 @@ export async function voteHelpful(
   userId: string,
   helpful: boolean
 ): Promise<typeof reviews.$inferSelect> {
-  const review = await db.query.reviews.findFirst({ where: eq(reviews.id, reviewId) });
-  if (!review) throw { statusCode: 404, message: "Review not found" };
+  return db.transaction(async (tx) => {
+    const review = await tx.query.reviews.findFirst({ where: eq(reviews.id, reviewId) });
+    if (!review) throw { statusCode: 404, message: "Review not found" };
 
-  const [updated] = await db.update(reviews)
-    .set({
-      totalVotes: review.totalVotes + 1,
-      helpfulVotes: helpful ? review.helpfulVotes + 1 : review.helpfulVotes,
-      updatedAt: new Date(),
-    })
-    .where(eq(reviews.id, reviewId))
-    .returning();
-
-  if (
-    updated.badge === "verified" &&
-    updated.totalVotes >= 10 &&
-    updated.helpfulVotes / updated.totalVotes >= 0.8
-  ) {
-    const [withBadge] = await db.update(reviews)
-      .set({ badge: "community_trusted" })
+    const [updated] = await tx.update(reviews)
+      .set({
+        totalVotes: review.totalVotes + 1,
+        helpfulVotes: helpful ? review.helpfulVotes + 1 : review.helpfulVotes,
+        updatedAt: new Date(),
+      })
       .where(eq(reviews.id, reviewId))
       .returning();
 
-    await db.insert(fpLedger).values({
-      userId: review.userId,
-      poolType: "review",
-      amount: 1000,
-      reason: "review_community_trusted",
-      referenceId: reviewId,
-      expiresAt: new Date(Date.now() + 90 * 86400000),
-    });
+    if (
+      updated.badge === "verified" &&
+      updated.totalVotes >= 10 &&
+      updated.helpfulVotes / updated.totalVotes >= 0.8
+    ) {
+      // Idempotency guard: only upgrade if still "verified" (not already "community_trusted")
+      const [withBadge] = await tx.update(reviews)
+        .set({ badge: "community_trusted" })
+        .where(and(eq(reviews.id, reviewId), eq(reviews.badge, "verified")))
+        .returning();
 
-    return withBadge;
-  }
+      if (withBadge) {
+        await tx.insert(fpLedger).values({
+          userId: review.userId,
+          poolType: "review",
+          amount: 1000,
+          reason: "review_community_trusted",
+          referenceId: reviewId,
+          expiresAt: new Date(Date.now() + 90 * 86400000),
+        });
+        return withBadge;
+      }
+    }
 
-  return updated;
+    return updated;
+  });
 }
