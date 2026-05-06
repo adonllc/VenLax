@@ -10,6 +10,7 @@ import { forecastRoutes } from "./modules/forecast/forecast.routes";
 import { reviewRoutes } from "./modules/reviews/reviews.routes";
 import { websocketPlugin } from "./plugins/websocket";
 import { notificationRoutes } from "./modules/notifications/notifications.routes";
+import { dailyLoginRoutes } from "./modules/auth/daily-login.routes";
 
 export async function buildApp(opts: { logger?: boolean } = {}): Promise<FastifyInstance> {
   const app = Fastify({ logger: opts.logger ?? true });
@@ -43,6 +44,8 @@ export async function buildApp(opts: { logger?: boolean } = {}): Promise<Fastify
   await app.register(reviewRoutes);
 
   await app.register(notificationRoutes);
+
+  await app.register(dailyLoginRoutes);
 
   return app;
 }
