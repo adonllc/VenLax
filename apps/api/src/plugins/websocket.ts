@@ -15,7 +15,13 @@ export function subscribe(marketId: string, ws: WSClient): void {
     subscribers.set(marketId, new Set());
   }
   subscribers.get(marketId)!.add(ws);
-  ws.on("close", () => subscribers.get(marketId)?.delete(ws));
+  ws.on("close", () => {
+    const set = subscribers.get(marketId);
+    if (set) {
+      set.delete(ws);
+      if (set.size === 0) subscribers.delete(marketId);
+    }
+  });
 }
 
 export function broadcastProbability(marketId: string, probability: number): void {
