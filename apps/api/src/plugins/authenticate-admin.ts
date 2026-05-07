@@ -27,7 +27,11 @@ export async function authenticateAdmin(
     return reply.code(401).send({ error: "Unauthorized" });
   }
   try {
-    (request as any).adminUser = verifyAdminToken(token);
+    const payload = verifyAdminToken(token);
+    if ((payload as any).step === "2fa") {
+      return reply.code(401).send({ error: "Unauthorized" });
+    }
+    (request as any).adminUser = payload;
   } catch {
     return reply.code(401).send({ error: "Unauthorized" });
   }
