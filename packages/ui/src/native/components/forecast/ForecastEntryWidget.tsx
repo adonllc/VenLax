@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import Slider from '@react-native-community/slider';
 import { colors } from '../../../tokens';
 import { Button } from '../atoms/Button';
 
@@ -8,15 +9,17 @@ export interface ForecastEntryWidgetProps {
   yesProb: number;
   fpBalance: number;
   maxFp: number;
-  onSubmit: (side: boolean, fpAmount: number) => Promise<void>;
+  onSubmit: (payload: { side: 'YES' | 'NO'; fp: number }) => Promise<void>;
   isLoggedIn: boolean;
   onLoginPrompt?: () => void;
 }
 
 export function ForecastEntryWidget({ yesProb, fpBalance, maxFp, onSubmit, isLoggedIn, onLoginPrompt }: ForecastEntryWidgetProps) {
-  const [side, setSide] = useState<boolean | null>(null);
+  const [side, setSide] = useState<null | 'YES' | 'NO'>(null);
+  const [fp, setFp] = useState(() => Math.min(100, Math.min(maxFp, fpBalance)));
   const [loading, setLoading] = useState(false);
-  const fp = Math.min(100, Math.min(maxFp, fpBalance));
+
+  const maxSlider = Math.max(1, Math.min(maxFp, fpBalance));
 
   if (!isLoggedIn) {
     return (
@@ -30,28 +33,43 @@ export function ForecastEntryWidget({ yesProb, fpBalance, maxFp, onSubmit, isLog
   async function handleSubmit() {
     if (side === null) return;
     setLoading(true);
-    try { await onSubmit(side, fp); } finally { setLoading(false); }
+    try { await onSubmit({ side, fp }); } finally { setLoading(false); }
   }
 
   return (
     <View style={styles.card}>
       <View style={styles.row}>
         <TouchableOpacity
-          style={[styles.sideBtn, { borderColor: colors.green }, side === true && { backgroundColor: colors.green }]}
-          onPress={() => setSide(true)}
+          style={[styles.sideBtn, { borderColor: colors.green }, side === 'YES' && { backgroundColor: colors.green }]}
+          onPress={() => setSide('YES')}
           accessibilityLabel={`YES, ${yesProb}%`}
         >
-          <Text style={[styles.sideBtnText, { color: side === true ? '#0D0D0D' : colors.green }]}>YES · {yesProb}%</Text>
+          <Text style={[styles.sideBtnText, { color: side === 'YES' ? '#0D0D0D' : colors.green }]}>YES · {yesProb}%</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.sideBtn, { borderColor: colors.orange }, side === false && { backgroundColor: colors.orange }]}
-          onPress={() => setSide(false)}
+          style={[styles.sideBtn, { borderColor: colors.orange }, side === 'NO' && { backgroundColor: colors.orange }]}
+          onPress={() => setSide('NO')}
           accessibilityLabel={`NO, ${100 - yesProb}%`}
         >
-          <Text style={[styles.sideBtnText, { color: side === false ? '#0D0D0D' : colors.orange }]}>NO · {100 - yesProb}%</Text>
+          <Text style={[styles.sideBtnText, { color: side === 'NO' ? '#0D0D0D' : colors.orange }]}>NO · {100 - yesProb}%</Text>
         </TouchableOpacity>
       </View>
       <Text style={styles.balance}>⚡ {fpBalance.toLocaleString()} FP balance</Text>
+      <View style={styles.sliderContainer}>
+        <Text style={styles.sliderLabel}>FP Amount: <Text style={styles.sliderValue}>{fp}</Text></Text>
+        <Slider
+          style={styles.slider}
+          minimumValue={1}
+          maximumValue={maxSlider}
+          step={1}
+          value={fp}
+          onValueChange={(v: number) => setFp(Math.round(v))}
+          minimumTrackTintColor={colors.lemon}
+          maximumTrackTintColor={colors.dark.border}
+          thumbTintColor={colors.lemon}
+          accessibilityLabel="FP amount slider"
+        />
+      </View>
       <Button variant="primary" onPress={handleSubmit} loading={loading} disabled={side === null}>Enter Forecast</Button>
     </View>
   );
@@ -64,4 +82,8 @@ const styles = StyleSheet.create({
   sideBtnText: { fontWeight: '600', fontSize: 14 },
   balance: { color: colors.lemon, fontFamily: 'monospace', fontWeight: '700', fontSize: 13 },
   secondary: { color: colors.dark.textSecondary, fontSize: 13 },
+  sliderContainer: { gap: 4 },
+  sliderLabel: { color: colors.dark.textSecondary, fontSize: 13 },
+  sliderValue: { color: colors.lemon, fontWeight: '700', fontFamily: 'monospace' },
+  slider: { width: '100%', height: 40 },
 });

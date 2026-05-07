@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { Text, StyleSheet } from 'react-native';
 import { colors } from '../../../tokens';
 
 export interface FPBadgeProps {
@@ -12,8 +12,16 @@ const fontSizes = { sm: 12, md: 14, lg: 16 };
 
 export function FPBadge({ amount, label, size = 'md' }: FPBadgeProps) {
   return (
-    <Text style={{ color: colors.lemon, fontWeight: '700', fontFamily: 'monospace', fontSize: fontSizes[size] }}>
+    <Text style={[styles.base, { fontSize: fontSizes[size] }]}>
       ⚡ {amount.toLocaleString()} FP{label ? ` ${label}` : ''}
     </Text>
   );
 }
+
+const styles = StyleSheet.create({
+  base: {
+    color: colors.lemon,
+    fontWeight: '700',
+    fontFamily: 'monospace',
+  },
+});
