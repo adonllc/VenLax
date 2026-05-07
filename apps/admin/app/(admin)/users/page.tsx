@@ -2,15 +2,16 @@ import Link from "next/link";
 import { adminApi } from "@/lib/admin-api";
 
 interface PageProps {
-  searchParams: { page?: string; search?: string; tier?: string; status?: string };
+  searchParams: Promise<{ page?: string; search?: string; tier?: string; status?: string }>;
 }
 
 export default async function UsersPage({ searchParams }: PageProps) {
+  const { page, search, tier, status } = await searchParams;
   const params: Record<string, string> = {};
-  if (searchParams.page) params.page = searchParams.page;
-  if (searchParams.search) params.search = searchParams.search;
-  if (searchParams.tier) params.tier = searchParams.tier;
-  if (searchParams.status) params.status = searchParams.status;
+  if (page) params.page = page;
+  if (search) params.search = search;
+  if (tier) params.tier = tier;
+  if (status) params.status = status;
 
   const data = await adminApi.users(params).catch(() => ({ users: [], total: 0, pages: 1 }));
 
@@ -19,9 +20,9 @@ export default async function UsersPage({ searchParams }: PageProps) {
       <h1 className="font-heading font-bold text-2xl text-text-primary mb-6">Users</h1>
 
       <form method="GET" className="flex gap-3 mb-5">
-        <input name="search" defaultValue={searchParams.search} placeholder="Search by email…"
+        <input name="search" defaultValue={search} placeholder="Search by email…"
           className="flex-1 bg-surface-3 border border-border rounded-lg px-3 py-2 text-sm text-text-primary outline-none focus:border-orange" />
-        <select name="tier" defaultValue={searchParams.tier ?? ""} className="bg-surface-3 border border-border rounded-lg px-3 py-2 text-sm text-text-primary">
+        <select name="tier" defaultValue={tier ?? ""} className="bg-surface-3 border border-border rounded-lg px-3 py-2 text-sm text-text-primary">
           <option value="">All tiers</option>
           <option value="free">Free</option>
           <option value="pro">Pro</option>

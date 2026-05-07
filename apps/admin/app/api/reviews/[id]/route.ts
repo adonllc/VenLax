@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminApi } from "@/lib/admin-api";
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const body = await request.json();
   try {
-    await adminApi.moderateReview(params.id, body.action);
+    await adminApi.moderateReview(id, body.action);
     return NextResponse.json({ ok: true });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Failed";

@@ -3,7 +3,7 @@ import { getAdminToken } from "./auth";
 const API_BASE = process.env.API_URL ?? "http://localhost:3001";
 
 async function adminFetch<T>(path: string, options?: RequestInit): Promise<T> {
-  const token = getAdminToken();
+  const token = await getAdminToken();
   const res = await fetch(`${API_BASE}${path}`, {
     ...options,
     cache: "no-store",

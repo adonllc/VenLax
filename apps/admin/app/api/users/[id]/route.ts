@@ -3,9 +3,10 @@ import { getAdminToken } from "@/lib/auth";
 
 const API_BASE = process.env.API_URL ?? "http://localhost:3001";
 
-export async function GET(_request: NextRequest, { params }: { params: { id: string } }) {
-  const token = getAdminToken();
-  const res = await fetch(`${API_BASE}/admin/users/${params.id}`, {
+export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const token = await getAdminToken();
+  const res = await fetch(`${API_BASE}/admin/users/${id}`, {
     cache: "no-store",
     headers: {
       "Content-Type": "application/json",

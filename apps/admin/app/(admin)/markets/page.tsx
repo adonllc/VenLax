@@ -2,14 +2,15 @@ import Link from "next/link";
 import { adminApi } from "@/lib/admin-api";
 
 interface PageProps {
-  searchParams: { page?: string; status?: string; category?: string };
+  searchParams: Promise<{ page?: string; status?: string; category?: string }>;
 }
 
 export default async function MarketsPage({ searchParams }: PageProps) {
+  const { page, status, category } = await searchParams;
   const params: Record<string, string> = {};
-  if (searchParams.page) params.page = searchParams.page;
-  if (searchParams.status) params.status = searchParams.status;
-  if (searchParams.category) params.category = searchParams.category;
+  if (page) params.page = page;
+  if (status) params.status = status;
+  if (category) params.category = category;
 
   const data = await adminApi.markets(params).catch(() => ({ markets: [], total: 0, pages: 1 }));
 
@@ -26,7 +27,7 @@ export default async function MarketsPage({ searchParams }: PageProps) {
         {["", "open", "closed", "resolved", "settled"].map((s) => (
           <Link key={s} href={s ? `/markets?status=${s}` : "/markets"}
             className={`text-xs font-semibold uppercase tracking-wider px-3 py-1.5 rounded-full border transition-colors ${
-              (searchParams.status ?? "") === s ? "border-orange text-orange" : "border-border text-text-secondary hover:text-text-primary"
+              (status ?? "") === s ? "border-orange text-orange" : "border-border text-text-secondary hover:text-text-primary"
             }`}>
             {s || "All"}
           </Link>
