@@ -64,6 +64,7 @@ export function ForecastEntryWidget({ yesProb, fpBalance, maxFp, onSubmit, isLog
           value={fp}
           onChange={(e) => setFp(Number(e.target.value))}
           className="w-full accent-green"
+          aria-label="FP to deploy"
         />
         <div className="flex justify-between">
           <span className="font-mono text-lemon text-sm">⚡ {cost.toLocaleString()} FP</span>
