@@ -30,6 +30,19 @@ export const xpLevelEnum = pgEnum("xp_level", [
   "rookie", "analyst", "expert", "master", "legend",
 ]);
 
+export const adminRoleEnum = pgEnum("admin_role", ["admin", "superadmin"]);
+
+export const adminUsers = pgTable("admin_users", {
+  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  passwordHash: varchar("password_hash", { length: 256 }).notNull(),
+  totpSecret: varchar("totp_secret", { length: 64 }),
+  role: adminRoleEnum("role").notNull().default("admin"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => ({
+  emailIdx: uniqueIndex("admin_users_email_idx").on(t.email),
+}));
+
 // ─── Users ───────────────────────────────────────────────────────────────────
 
 export const users = pgTable("users", {
