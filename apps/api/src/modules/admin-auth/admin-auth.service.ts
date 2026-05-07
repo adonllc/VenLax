@@ -17,8 +17,10 @@ async function hashPassword(password: string): Promise<string> {
 
 async function verifyPassword(password: string, stored: string): Promise<boolean> {
   const [salt, hash] = stored.split(":");
+  if (!salt || !hash) return false;
   const hashBuf = Buffer.from(hash, "hex");
   const derived = (await scryptAsync(password, salt, 64)) as Buffer;
+  if (hashBuf.length !== derived.length) return false;
   return timingSafeEqual(hashBuf, derived);
 }
 
@@ -68,13 +70,14 @@ export async function adminVerify2fa(input: { partialToken: string; totpCode: st
 }
 
 export async function seedAdmin(email: string, password: string): Promise<string> {
-  const existing = await db.query.adminUsers.findFirst({ where: eq(adminUsers.email, email) });
+  const normalizedEmail = email.toLowerCase();
+  const existing = await db.query.adminUsers.findFirst({ where: eq(adminUsers.email, normalizedEmail) });
   if (existing) return existing.totpSecret ?? "already-seeded";
 
   const passwordHash = await hashPassword(password);
   const totpSecret = authenticator.generateSecret();
 
-  await db.insert(adminUsers).values({ email, passwordHash, totpSecret, role: "superadmin" });
+  await db.insert(adminUsers).values({ email: normalizedEmail, passwordHash, totpSecret, role: "superadmin" });
 
   return totpSecret;
 }

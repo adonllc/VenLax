@@ -81,6 +81,12 @@ export async function listMarkets(opts: {
   return { markets: rows, total, page: opts.page, pages: Math.ceil(total / limit) };
 }
 
+export async function getMarketDetail(marketId: string) {
+  const market = await db.query.markets.findFirst({ where: eq(markets.id, marketId) });
+  if (!market) throw { statusCode: 404, message: "Market not found" };
+  return market;
+}
+
 export async function createMarket(input: {
   title: string;
   description: string;

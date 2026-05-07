@@ -1,3 +1,4 @@
+import "server-only";
 import { getAdminToken } from "./auth";
 
 const API_BASE = process.env.API_URL ?? "http://localhost:3001";

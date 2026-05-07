@@ -5,6 +5,7 @@ import {
   getUserDetail,
   suspendUser,
   listMarkets,
+  getMarketDetail,
   createMarket,
   resolveMarket,
   adjustFP,
@@ -70,6 +71,15 @@ export async function adminRoutes(app: FastifyInstance) {
   app.get("/admin/markets", { preHandler }, async (request, reply) => {
     const { page = "1", status, category } = request.query as any;
     return reply.send(await listMarkets({ page: Number(page), status, category }));
+  });
+
+  app.get("/admin/markets/:id", { preHandler }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    try {
+      return reply.send(await getMarketDetail(id));
+    } catch (err: any) {
+      return reply.code(err.statusCode ?? 500).send({ error: err.message });
+    }
   });
 
   app.post("/admin/markets", { preHandler }, async (request, reply) => {
