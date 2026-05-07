@@ -49,7 +49,7 @@ describe('HelpfulVoteRow', () => {
   it('calls onVote with true when Helpful clicked', async () => {
     const fn = vi.fn();
     render(<HelpfulVoteRow helpfulVotes={0} totalVotes={0} onVote={fn} />);
-    await userEvent.click(screen.getByRole('button', { name: /helpful/i }));
+    await userEvent.click(screen.getByRole('button', { name: 'Mark as helpful' }));
     expect(fn).toHaveBeenCalledWith(true);
   });
 });

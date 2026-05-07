@@ -21,9 +21,9 @@ export function HelpfulVoteRow({ helpfulVotes, totalVotes, onVote, voteLoading }
         disabled={voteLoading}
         onClick={() => onVote(false)}
         className="hover:text-orange disabled:opacity-50 transition-colors"
-        aria-label="Mark as not useful"
+        aria-label="Mark as not helpful"
       >
-        👎 Not useful
+        👎 Not helpful
       </button>
     </div>
   );
