@@ -9,8 +9,8 @@ export interface AdminUser {
   role: "admin" | "superadmin";
 }
 
-export function getAdminToken(): string | null {
-  const cookieStore = cookies();
+export async function getAdminToken(): Promise<string | null> {
+  const cookieStore = await cookies();
   return cookieStore.get("admin_token")?.value ?? null;
 }
 
@@ -22,8 +22,8 @@ export function verifyAdminToken(token: string): AdminUser | null {
   }
 }
 
-export function getAdminUser(): AdminUser | null {
-  const token = getAdminToken();
+export async function getAdminUser(): Promise<AdminUser | null> {
+  const token = await getAdminToken();
   if (!token) return null;
   return verifyAdminToken(token);
 }

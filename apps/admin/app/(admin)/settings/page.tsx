@@ -1,7 +1,7 @@
 import { getAdminUser } from "@/lib/auth";
 
-export default function SettingsPage() {
-  const admin = getAdminUser();
+export default async function SettingsPage() {
+  const admin = await getAdminUser();
 
   return (
     <div className="max-w-lg">
