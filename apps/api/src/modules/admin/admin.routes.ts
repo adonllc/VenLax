@@ -35,6 +35,9 @@ const moderateSchema = z.object({
   action: z.enum(["approved", "rejected"]),
 });
 
+const suspendSchema = z.object({ suspend: z.boolean() });
+const resolveSchema = z.object({ outcome: z.enum(["yes", "no"]) });
+
 export async function adminRoutes(app: FastifyInstance) {
   const preHandler = [authenticateAdmin];
 
@@ -56,8 +59,9 @@ export async function adminRoutes(app: FastifyInstance) {
 
   app.patch("/admin/users/:id/suspend", { preHandler }, async (request, reply) => {
     const { id } = request.params as { id: string };
-    const { suspend } = request.body as { suspend: boolean };
-    await suspendUser(id, suspend);
+    const result = suspendSchema.safeParse(request.body);
+    if (!result.success) return reply.code(400).send({ error: result.error.flatten() });
+    await suspendUser(id, result.data.suspend);
     return reply.send({ ok: true });
   });
 
@@ -80,8 +84,9 @@ export async function adminRoutes(app: FastifyInstance) {
 
   app.patch("/admin/markets/:id/resolve", { preHandler }, async (request, reply) => {
     const { id } = request.params as { id: string };
-    const { outcome } = request.body as { outcome: "yes" | "no" };
-    await resolveMarket(id, outcome);
+    const result = resolveSchema.safeParse(request.body);
+    if (!result.success) return reply.code(400).send({ error: result.error.flatten() });
+    await resolveMarket(id, result.data.outcome);
     return reply.send({ ok: true });
   });
 
