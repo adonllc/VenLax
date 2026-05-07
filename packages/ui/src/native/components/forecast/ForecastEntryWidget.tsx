@@ -20,12 +20,22 @@ export function ForecastEntryWidget({ yesProb, fpBalance, maxFp, onSubmit, isLog
   const [loading, setLoading] = useState(false);
 
   const maxSlider = Math.max(1, Math.min(maxFp, fpBalance));
+  const insufficientFp = Math.min(maxFp, fpBalance) < 1;
 
   if (!isLoggedIn) {
     return (
       <View style={styles.card}>
         <Text style={styles.secondary}>Log in to make a forecast entry</Text>
         <Button variant="primary" size="sm" onPress={onLoginPrompt}>Log in</Button>
+      </View>
+    );
+  }
+
+  if (insufficientFp) {
+    return (
+      <View style={[styles.card, styles.disabled]}>
+        <Text style={styles.secondary}>Insufficient FP balance to make a forecast entry</Text>
+        <Button variant="primary" size="sm" disabled>Enter Forecast</Button>
       </View>
     );
   }
@@ -77,6 +87,7 @@ export function ForecastEntryWidget({ yesProb, fpBalance, maxFp, onSubmit, isLog
 
 const styles = StyleSheet.create({
   card: { backgroundColor: colors.dark.surface3, borderRadius: 12, padding: 16, borderWidth: 1, borderColor: colors.dark.border, gap: 12 },
+  disabled: { opacity: 0.5 },
   row: { flexDirection: 'row', gap: 12 },
   sideBtn: { flex: 1, height: 48, borderRadius: 12, borderWidth: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.dark.surface3 },
   sideBtnText: { fontWeight: '600', fontSize: 14 },

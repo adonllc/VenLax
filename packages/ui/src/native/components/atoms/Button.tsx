@@ -14,6 +14,32 @@ export interface ButtonProps {
   children: React.ReactNode;
 }
 
+const variantStyles: Record<ButtonVariant, object> = {
+  primary: styles.variant_primary,
+  secondary: styles.variant_secondary,
+  ghost: styles.variant_ghost,
+  danger: styles.variant_danger,
+};
+
+const sizeStyles: Record<ButtonSize, object> = {
+  sm: styles.size_sm,
+  md: styles.size_md,
+  lg: styles.size_lg,
+};
+
+const textVariantStyles: Record<ButtonVariant, object> = {
+  primary: styles.text_primary,
+  secondary: styles.text_secondary,
+  ghost: styles.text_ghost,
+  danger: styles.text_danger,
+};
+
+const textSizeStyles: Record<ButtonSize, object> = {
+  sm: styles.textSize_sm,
+  md: styles.textSize_md,
+  lg: styles.textSize_lg,
+};
+
 export function Button({ variant = 'primary', size = 'md', loading, disabled, onPress, children }: ButtonProps) {
   return (
     <TouchableOpacity
@@ -22,15 +48,15 @@ export function Button({ variant = 'primary', size = 'md', loading, disabled, on
       activeOpacity={0.8}
       style={[
         styles.base,
-        styles[`size_${size}` as keyof typeof styles] as any,
-        styles[`variant_${variant}` as keyof typeof styles] as any,
+        sizeStyles[size],
+        variantStyles[variant],
         (disabled || loading) && styles.disabled,
       ]}
       accessibilityRole="button"
       accessibilityState={{ disabled: !!(disabled || loading), busy: !!loading }}
     >
       {loading && <ActivityIndicator size="small" color={variant === 'primary' ? '#0D0D0D' : colors.green} style={styles.spinner} />}
-      <Text style={[styles.text, styles[`text_${variant}` as keyof typeof styles] as any, styles[`textSize_${size}` as keyof typeof styles] as any]}>
+      <Text style={[styles.text, textVariantStyles[variant], textSizeStyles[size]]}>
         {children}
       </Text>
     </TouchableOpacity>

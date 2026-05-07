@@ -9,6 +9,7 @@
     "ios": "expo run:ios"
   },
   "dependencies": {
+    "@react-native-community/slider": "^4.5.5",
     "@venlaxiq/ui": "workspace:*",
     "@venlaxiq/shared": "workspace:*",
     "expo": "~51.0.0",

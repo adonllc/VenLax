@@ -18,7 +18,8 @@ export interface ReviewCardProps {
 }
 
 export function ReviewCard({ reviewerName, reviewerAvatar, rating, title, body, badge, helpfulVotes, totalVotes, createdAt, onVote }: ReviewCardProps) {
-  const stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+  const safeRating = Math.max(0, Math.min(5, Math.round(rating)));
+  const stars = '★'.repeat(safeRating) + '☆'.repeat(5 - safeRating);
   return (
     <View style={[styles.card, badge === 'none' && styles.dimmed]}>
       <View style={styles.header}>

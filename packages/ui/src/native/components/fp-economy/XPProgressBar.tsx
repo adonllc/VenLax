@@ -23,7 +23,7 @@ export function XPProgressBar({ level, xp, nextLevelXp }: XPProgressBarProps) {
         <Text style={styles.xp}>{xp.toLocaleString()} XP</Text>
       </View>
       <View style={styles.track} accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: 100, now: pct }}>
-        <View style={[styles.fill, { width: `${pct}%` as any }]} />
+        <View style={[styles.fill, { width: `${pct}%` }]} />
       </View>
       {level !== 'legend' && <Text style={styles.next}>{nextLevelXp.toLocaleString()} XP to next level</Text>}
     </View>
