@@ -34,7 +34,7 @@ export const adminRoleEnum = pgEnum("admin_role", ["admin", "superadmin"]);
 
 export const adminUsers = pgTable("admin_users", {
   id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
-  email: varchar("email", { length: 320 }).notNull().unique(),
+  email: varchar("email", { length: 320 }).notNull(),
   passwordHash: varchar("password_hash", { length: 256 }).notNull(),
   totpSecret: varchar("totp_secret", { length: 64 }),
   role: adminRoleEnum("role").notNull().default("admin"),
