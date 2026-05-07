@@ -1,5 +1,6 @@
 import Fastify, { FastifyInstance } from "fastify";
 import cors from "@fastify/cors";
+import cookie from "@fastify/cookie";
 import rateLimit from "@fastify/rate-limit";
 import jwt from "@fastify/jwt";
 import { authRoutes } from "./modules/auth/auth.routes";
@@ -18,6 +19,8 @@ export async function buildApp(opts: { logger?: boolean } = {}): Promise<Fastify
   const app = Fastify({ logger: opts.logger ?? true });
 
   await app.register(cors, { origin: true });
+
+  await app.register(cookie);
 
   await app.register(websocketPlugin);
 
