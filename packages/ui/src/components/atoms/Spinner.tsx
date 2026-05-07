@@ -1,4 +1,5 @@
 import { clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 export interface SpinnerProps {
   size?: 'sm' | 'md' | 'lg';
@@ -11,7 +12,7 @@ export function Spinner({ size = 'md', className }: SpinnerProps) {
   return (
     <div
       role="status"
-      className={clsx('animate-spin rounded-full border-green border-t-transparent', sizes[size], className)}
+      className={twMerge(clsx('animate-spin rounded-full border-green border-t-transparent', sizes[size], className))}
     />
   );
 }

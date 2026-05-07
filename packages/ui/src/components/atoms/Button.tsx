@@ -41,9 +41,10 @@ export function Button({
         className,
       ))}
       disabled={disabled || loading}
+      aria-busy={loading}
       {...props}
     >
-      {loading && <span className="mr-2 animate-spin inline-block">⟳</span>}
+      {loading && <span aria-hidden="true" className="mr-2 animate-spin inline-block">⟳</span>}
       {children}
     </button>
   );

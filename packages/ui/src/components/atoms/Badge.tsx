@@ -1,4 +1,5 @@
 import { clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 export type BadgeVariant = 'green' | 'lemon' | 'orange' | 'neutral';
 
@@ -17,7 +18,7 @@ const variants: Record<BadgeVariant, string> = {
 
 export function Badge({ label, variant = 'neutral', className }: BadgeProps) {
   return (
-    <span className={clsx('inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border', variants[variant], className)}>
+    <span className={twMerge(clsx('inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border', variants[variant], className))}>
       {label}
     </span>
   );

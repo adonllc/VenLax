@@ -21,7 +21,7 @@ export function Toast({ message, variant = 'info', onClose }: ToastProps) {
       <span className="text-base">{icon}</span>
       <span className="flex-1">{message}</span>
       {onClose && (
-        <button onClick={onClose} className="ml-2 opacity-60 hover:opacity-100">✕</button>
+        <button onClick={onClose} aria-label="Dismiss notification" className="ml-2 opacity-60 hover:opacity-100">✕</button>
       )}
     </div>
   );

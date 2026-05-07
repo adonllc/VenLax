@@ -1,4 +1,5 @@
 import { clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 export interface AvatarProps {
   src?: string | null;
@@ -19,12 +20,16 @@ export function Avatar({ src, name, size = 'md', className }: AvatarProps) {
       <img
         src={src}
         alt={name}
-        className={clsx('rounded-full object-cover bg-surface-3', sizes[size], className)}
+        className={twMerge(clsx('rounded-full object-cover bg-surface-3', sizes[size], className))}
       />
     );
   }
   return (
-    <div className={clsx('rounded-full bg-surface-3 border border-border flex items-center justify-center font-semibold text-text-primary', sizes[size], className)}>
+    <div
+      role="img"
+      aria-label={name}
+      className={twMerge(clsx('rounded-full bg-surface-3 border border-border flex items-center justify-center font-semibold text-text-primary', sizes[size], className))}
+    >
       {initials(name)}
     </div>
   );

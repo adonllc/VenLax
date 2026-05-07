@@ -13,9 +13,10 @@ describe('Button', () => {
     render(<Button>Click me</Button>);
     expect(screen.getByText('Click me')).toBeInTheDocument();
   });
-  it('shows loading spinner', () => {
+  it('shows loading spinner and is disabled', () => {
     render(<Button loading>Submit</Button>);
     expect(screen.getByRole('button')).toBeDisabled();
+    expect(screen.getByText('⟳')).toBeInTheDocument();
   });
   it('calls onClick', async () => {
     const fn = vi.fn();
@@ -34,6 +35,14 @@ describe('Input', () => {
     render(<Input label="Password" error="Required" />);
     expect(screen.getByText('Required')).toBeInTheDocument();
   });
+  it('shows hint when no error', () => {
+    render(<Input label="Name" hint="Your full name" />);
+    expect(screen.getByText('Your full name')).toBeInTheDocument();
+  });
+  it('hides hint when error is set', () => {
+    render(<Input label="Name" hint="Your full name" error="Required" />);
+    expect(screen.queryByText('Your full name')).not.toBeInTheDocument();
+  });
 });
 
 describe('Select', () => {
@@ -41,6 +50,10 @@ describe('Select', () => {
     render(<Select options={[{ value: 'a', label: 'Apple' }, { value: 'b', label: 'Banana' }]} />);
     expect(screen.getByText('Apple')).toBeInTheDocument();
     expect(screen.getByText('Banana')).toBeInTheDocument();
+  });
+  it('associates label with select', () => {
+    render(<Select label="Category" options={[{ value: 'a', label: 'A' }]} />);
+    expect(screen.getByLabelText('Category')).toBeInTheDocument();
   });
 });
 
