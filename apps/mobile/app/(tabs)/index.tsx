@@ -68,14 +68,14 @@ export default function HomeScreen() {
   } = useQuery({ queryKey: ["streak"], queryFn: fetchStreak });
 
   const { data: missions } = useQuery({
-    queryKey: ["missions-today"],
+    queryKey: ["missions"],
     queryFn: fetchMissions,
   });
 
   const {
     data: markets,
     isLoading: marketsLoading,
-  } = useQuery({ queryKey: ["markets-open"], queryFn: fetchMarkets });
+  } = useQuery({ queryKey: ["home-markets"], queryFn: fetchMarkets });
 
   // Auto-show bottom sheet when streak is unclaimed
   useEffect(() => {
@@ -99,8 +99,8 @@ export default function HomeScreen() {
     setRefreshing(true);
     await Promise.allSettled([
       qc.invalidateQueries({ queryKey: ["streak"] }),
-      qc.invalidateQueries({ queryKey: ["missions-today"] }),
-      qc.invalidateQueries({ queryKey: ["markets-open"] }),
+      qc.invalidateQueries({ queryKey: ["missions"] }),
+      qc.invalidateQueries({ queryKey: ["home-markets"] }),
     ]);
     setRefreshing(false);
   }, [qc]);
