@@ -17,6 +17,8 @@ import { adminRoutes } from "./modules/admin/admin.routes";
 import { socialRoutes } from "./modules/social/social.routes";
 import { profileRoutes } from "./modules/profile/profile.routes";
 import { leaderboardRoutes } from "./modules/leaderboard/leaderboard.routes";
+import { gamificationRoutes } from "./modules/gamification/gamification.routes";
+import { rewardsRoutes } from "./modules/rewards/rewards.routes";
 
 export async function buildApp(opts: { logger?: boolean } = {}): Promise<FastifyInstance> {
   const app = Fastify({ logger: opts.logger ?? true });
@@ -64,6 +66,10 @@ export async function buildApp(opts: { logger?: boolean } = {}): Promise<Fastify
   await app.register(profileRoutes);
 
   await app.register(leaderboardRoutes);
+
+  await app.register(gamificationRoutes);
+
+  await app.register(rewardsRoutes);
 
   return app;
 }
