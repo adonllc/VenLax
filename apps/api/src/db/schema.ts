@@ -30,6 +30,10 @@ export const xpLevelEnum = pgEnum("xp_level", [
   "rookie", "analyst", "expert", "master", "legend",
 ]);
 
+export const reviewStatusEnum = pgEnum("review_status", [
+  "pending", "published", "flagged", "rejected",
+]);
+
 export const adminRoleEnum = pgEnum("admin_role", ["admin", "superadmin"]);
 
 export const adminUsers = pgTable("admin_users", {
@@ -164,6 +168,7 @@ export const reviews = pgTable("reviews", {
   totalVotes: integer("total_votes").notNull().default(0),
   receiptUrl: text("receipt_url"), // MinIO path
   isPublished: boolean("is_published").notNull().default(false),
+  status: reviewStatusEnum("status").notNull().default("pending"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => ({
@@ -215,4 +220,73 @@ export const aiInsightSignals = pgTable("ai_insight_signals", {
 }, (t) => ({
   marketIdx: index("ai_signals_market_idx").on(t.marketId),
   marketCreatedIdx: index("ai_signals_market_created_idx").on(t.marketId, t.createdAt),
+}));
+
+// ─── Social — follows ────────────────────────────────────────────────────────
+
+export const userFollows = pgTable("user_follows", {
+  followerId: uuid("follower_id").notNull().references(() => users.id),
+  followeeId: uuid("followee_id").notNull().references(() => users.id),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => ({
+  pk: uniqueIndex("user_follows_pk").on(t.followerId, t.followeeId),
+  followeeIdx: index("user_follows_followee_idx").on(t.followeeId),
+}));
+
+// ─── Gamification — badges ──────────────────────────────────────────────────
+
+export const userBadges = pgTable("user_badges", {
+  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: uuid("user_id").notNull().references(() => users.id),
+  badgeId: varchar("badge_id", { length: 50 }).notNull(),
+  earnedAt: timestamp("earned_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => ({
+  userBadgeUniq: uniqueIndex("user_badges_user_badge_idx").on(t.userId, t.badgeId),
+  userIdx: index("user_badges_user_idx").on(t.userId),
+}));
+
+export const missions = pgTable("missions", {
+  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: varchar("title", { length: 100 }).notNull(),
+  description: text("description").notNull(),
+  fpReward: integer("fp_reward").notNull(),
+  xpReward: integer("xp_reward").notNull().default(0),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const userMissions = pgTable("user_missions", {
+  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: uuid("user_id").notNull().references(() => users.id),
+  missionId: uuid("mission_id").notNull().references(() => missions.id),
+  date: varchar("date", { length: 10 }).notNull(), // YYYY-MM-DD
+  completedAt: timestamp("completed_at", { withTimezone: true }),
+}, (t) => ({
+  userMissionDateUniq: uniqueIndex("user_missions_uniq").on(t.userId, t.missionId, t.date),
+  userDateIdx: index("user_missions_user_date_idx").on(t.userId, t.date),
+}));
+
+// ─── Rewards ─────────────────────────────────────────────────────────────────
+
+export const rewardCatalog = pgTable("reward_catalog", {
+  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name", { length: 100 }).notNull(),
+  category: varchar("category", { length: 50 }).notNull(),
+  fpCost: integer("fp_cost").notNull(),
+  imageUrl: text("image_url"),
+  description: text("description"),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const rewardRedemptions = pgTable("reward_redemptions", {
+  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: uuid("user_id").notNull().references(() => users.id),
+  catalogItemId: uuid("catalog_item_id").notNull().references(() => rewardCatalog.id),
+  fpDebited: integer("fp_debited").notNull(),
+  code: varchar("code", { length: 100 }).notNull(),
+  status: varchar("status", { length: 20 }).notNull().default("completed"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => ({
+  userIdx: index("redemptions_user_idx").on(t.userId),
 }));
