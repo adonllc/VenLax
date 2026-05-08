@@ -4,7 +4,7 @@ import { colors, Theme } from "./tokens";
 interface ThemeContextValue {
   theme: Theme;
   setTheme: (t: Theme) => void;
-  surface: typeof colors.dark;
+  surface: typeof colors.dark | typeof colors.light;
 }
 
 const ThemeContext = createContext<ThemeContextValue>({

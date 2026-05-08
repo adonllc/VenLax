@@ -41,7 +41,7 @@ export default function RewardsPage() {
     <div>
       <h1 className="font-heading font-bold text-2xl text-text-primary mb-6">Rewards</h1>
 
-      <WalletSummary fpBalance={balance?.balance ?? 0} className="mb-6" />
+      <WalletSummary earnedFp={balance?.balance ?? 0} expiresAt={null} />
 
       {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
       {success && <p className="text-green text-sm mb-4 font-semibold">{success}</p>}
@@ -54,10 +54,10 @@ export default function RewardsPage() {
             name={item.name}
             category={item.category}
             fpCost={item.fpCost}
-            description={item.description}
+            imageUrl={item.imageUrl ?? null}
             canAfford={(balance?.balance ?? 0) >= item.fpCost}
             onRedeem={() => redeem.mutate(item.id)}
-            isLoading={redeem.isPending}
+            redeemLoading={redeem.isPending}
           />
         ))}
       </div>

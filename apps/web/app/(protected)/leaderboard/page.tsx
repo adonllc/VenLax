@@ -19,10 +19,10 @@ export default function LeaderboardPage() {
             key={entry.id}
             rank={entry.rank}
             username={entry.username}
-            avatarUrl={entry.avatarUrl}
-            reputationScore={entry.reputationScore}
-            xpLevel={entry.xpLevel}
-            subscriptionTier={entry.subscriptionTier}
+            avatarUrl={entry.avatarUrl ?? null}
+            accuracy={entry.accuracy ?? 0}
+            fpEarned={entry.fpEarned ?? 0}
+            isCurrentUser={entry.isCurrentUser ?? false}
           />
         ))}
       </div>

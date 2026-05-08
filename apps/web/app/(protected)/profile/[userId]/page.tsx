@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ProfileHeader, BadgeDisplay, FollowButton } from "@venlaxiq/ui";
+import { ProfileHeader, BadgeDisplay } from "@venlaxiq/ui";
 
 export default function PublicProfilePage() {
   const { userId } = useParams<{ userId: string }>();
@@ -32,21 +32,29 @@ export default function PublicProfilePage() {
       <div className="flex items-start justify-between mb-6">
         <ProfileHeader
           username={profile.user.username}
-          avatarUrl={profile.user.avatarUrl}
-          subscriptionTier={profile.user.subscriptionTier}
-          totalForecasts={profile.totalForecasts}
-          reputationScore={profile.user.reputationScore}
-        />
-        <FollowButton
+          avatarUrl={profile.user.avatarUrl ?? null}
+          tier={profile.user.subscriptionTier ?? "free"}
+          xpLevel={profile.user.xpLevel ?? "rookie"}
+          accuracy={profile.user.accuracy ?? 0}
+          isOwnProfile={false}
           isFollowing={profile.isFollowing ?? false}
-          onToggle={(isFollowing) => follow.mutate(isFollowing)}
-          isLoading={follow.isPending}
+          followerCount={profile.followerCount ?? 0}
+          followingCount={profile.followingCount}
+          onFollow={() => follow.mutate(profile.isFollowing ?? false)}
+          followLoading={follow.isPending}
         />
       </div>
       {followError && <p className="text-red-400 text-sm mt-2">{followError}</p>}
       <div className="flex flex-wrap gap-3">
         {profile.badges?.filter((b: any) => b.earned).map((b: any) => (
-          <BadgeDisplay key={b.id} badge={b} />
+          <BadgeDisplay
+            key={b.id}
+            name={b.name}
+            icon={b.icon ?? "🏅"}
+            fpReward={b.fpReward ?? 0}
+            unlocked={true}
+            earnedAt={b.earnedAt ? new Date(b.earnedAt) : undefined}
+          />
         ))}
       </div>
     </div>
