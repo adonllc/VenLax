@@ -14,6 +14,27 @@ export interface ButtonProps {
   children: React.ReactNode;
 }
 
+const styles = StyleSheet.create({
+  base: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderRadius: 12 },
+  disabled: { opacity: 0.5 },
+  spinner: { marginRight: 8 },
+  variant_primary: { backgroundColor: colors.green },
+  variant_secondary: { backgroundColor: colors.dark.surface3, borderWidth: 1, borderColor: colors.dark.border },
+  variant_ghost: { backgroundColor: 'transparent' },
+  variant_danger: { backgroundColor: '#FF3B30' },
+  size_sm: { height: 32, paddingHorizontal: 12 },
+  size_md: { height: 40, paddingHorizontal: 16 },
+  size_lg: { height: 48, paddingHorizontal: 24 },
+  text: { fontWeight: '600' },
+  text_primary: { color: '#0D0D0D' },
+  text_secondary: { color: colors.dark.textPrimary },
+  text_ghost: { color: colors.dark.textPrimary },
+  text_danger: { color: '#FFFFFF' },
+  textSize_sm: { fontSize: 12 },
+  textSize_md: { fontSize: 14 },
+  textSize_lg: { fontSize: 16 },
+});
+
 const variantStyles: Record<ButtonVariant, object> = {
   primary: styles.variant_primary,
   secondary: styles.variant_secondary,
@@ -62,24 +83,3 @@ export function Button({ variant = 'primary', size = 'md', loading, disabled, on
     </TouchableOpacity>
   );
 }
-
-const styles = StyleSheet.create({
-  base: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderRadius: 12 },
-  disabled: { opacity: 0.5 },
-  spinner: { marginRight: 8 },
-  variant_primary: { backgroundColor: colors.green },
-  variant_secondary: { backgroundColor: colors.dark.surface3, borderWidth: 1, borderColor: colors.dark.border },
-  variant_ghost: { backgroundColor: 'transparent' },
-  variant_danger: { backgroundColor: '#FF3B30' },
-  size_sm: { height: 32, paddingHorizontal: 12 },
-  size_md: { height: 40, paddingHorizontal: 16 },
-  size_lg: { height: 48, paddingHorizontal: 24 },
-  text: { fontWeight: '600' },
-  text_primary: { color: '#0D0D0D' },
-  text_secondary: { color: colors.dark.textPrimary },
-  text_ghost: { color: colors.dark.textPrimary },
-  text_danger: { color: '#FFFFFF' },
-  textSize_sm: { fontSize: 12 },
-  textSize_md: { fontSize: 14 },
-  textSize_lg: { fontSize: 16 },
-});
