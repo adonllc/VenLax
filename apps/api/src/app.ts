@@ -14,6 +14,9 @@ import { notificationRoutes } from "./modules/notifications/notifications.routes
 import { dailyLoginRoutes } from "./modules/auth/daily-login.routes";
 import { adminAuthRoutes } from "./modules/admin-auth/admin-auth.routes";
 import { adminRoutes } from "./modules/admin/admin.routes";
+import { socialRoutes } from "./modules/social/social.routes";
+import { profileRoutes } from "./modules/profile/profile.routes";
+import { leaderboardRoutes } from "./modules/leaderboard/leaderboard.routes";
 
 export async function buildApp(opts: { logger?: boolean } = {}): Promise<FastifyInstance> {
   const app = Fastify({ logger: opts.logger ?? true });
@@ -55,6 +58,12 @@ export async function buildApp(opts: { logger?: boolean } = {}): Promise<Fastify
   await app.register(adminAuthRoutes);
 
   await app.register(adminRoutes);
+
+  await app.register(socialRoutes);
+
+  await app.register(profileRoutes);
+
+  await app.register(leaderboardRoutes);
 
   return app;
 }
