@@ -3,6 +3,15 @@ import { authenticate } from "../../plugins/authenticate";
 import { getPublicProfile, updateOwnProfile } from "./profile.service";
 
 export async function profileRoutes(app: FastifyInstance) {
+  app.get("/profile/me", { preHandler: [authenticate] }, async (request, reply) => {
+    const userId = (request as any).user.sub;
+    try {
+      return reply.send(await getPublicProfile(userId, userId));
+    } catch (err: any) {
+      return reply.code(err.statusCode ?? 500).send({ error: err.message });
+    }
+  });
+
   app.get("/profile/:id", async (request, reply) => {
     const { id } = request.params as { id: string };
     try {
@@ -17,14 +26,5 @@ export async function profileRoutes(app: FastifyInstance) {
     const input = request.body as { username?: string; avatarUrl?: string };
     await updateOwnProfile(userId, input);
     return reply.send({ ok: true });
-  });
-
-  app.get("/profile/me", { preHandler: [authenticate] }, async (request, reply) => {
-    const userId = (request as any).user.sub;
-    try {
-      return reply.send(await getPublicProfile(userId, userId));
-    } catch (err: any) {
-      return reply.code(err.statusCode ?? 500).send({ error: err.message });
-    }
   });
 }

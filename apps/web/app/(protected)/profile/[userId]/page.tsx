@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ProfileHeader, BadgeDisplay, FollowButton } from "@venlaxiq/ui";
@@ -7,6 +8,7 @@ import { ProfileHeader, BadgeDisplay, FollowButton } from "@venlaxiq/ui";
 export default function PublicProfilePage() {
   const { userId } = useParams<{ userId: string }>();
   const qc = useQueryClient();
+  const [followError, setFollowError] = useState("");
 
   const { data: profile } = useQuery<any>({
     queryKey: ["profile", userId],
@@ -20,6 +22,7 @@ export default function PublicProfilePage() {
       });
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["profile", userId] }),
+    onError: (err: any) => setFollowError(err?.message ?? "Action failed"),
   });
 
   if (!profile) return <p className="text-text-secondary text-sm">Loading…</p>;
@@ -40,6 +43,7 @@ export default function PublicProfilePage() {
           isLoading={follow.isPending}
         />
       </div>
+      {followError && <p className="text-red-400 text-sm mt-2">{followError}</p>}
       <div className="flex flex-wrap gap-3">
         {profile.badges?.filter((b: any) => b.earned).map((b: any) => (
           <BadgeDisplay key={b.id} badge={b} />
