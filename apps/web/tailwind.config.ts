@@ -1,36 +1,29 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-  content: ["./app/**/*.{ts,tsx}", "../../packages/ui/src/**/*.{ts,tsx}"],
+  content: [
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./providers/**/*.{js,ts,jsx,tsx,mdx}",
+    "../../packages/ui/src/**/*.{js,ts,jsx,tsx}",
+  ],
   theme: {
     extend: {
       colors: {
-        green: {
-          DEFAULT: "#00D46A",
-          dark: "#00A854",
-        },
-        lemon: {
-          DEFAULT: "#FFE600",
-        },
-        orange: {
-          DEFAULT: "#FF6B00",
-          dark: "#D45A00",
-        },
-        surface: {
-          DEFAULT: "var(--color-surface)",
-          2: "var(--color-surface-2)",
-          3: "var(--color-surface-3)",
-        },
+        surface: "var(--color-surface)",
+        "surface-2": "var(--color-surface-2)",
+        "surface-3": "var(--color-surface-3)",
         border: "var(--color-border)",
-        text: {
-          primary: "var(--color-text-primary)",
-          secondary: "var(--color-text-secondary)",
-        },
+        orange: "var(--color-orange)",
+        "orange-dark": "var(--color-orange-dark)",
+        green: "var(--color-green)",
+        "green-dark": "var(--color-green-dark)",
+        lemon: "var(--color-lemon)",
+        "text-primary": "var(--color-text-primary)",
+        "text-secondary": "var(--color-text-secondary)",
       },
       fontFamily: {
-        heading: ["Outfit", "sans-serif"],
-        body: ["Inter", "sans-serif"],
-        mono: ["JetBrains Mono", "monospace"],
+        heading: ["var(--font-heading)", "sans-serif"],
       },
     },
   },
