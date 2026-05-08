@@ -18,4 +18,13 @@ export async function profileRoutes(app: FastifyInstance) {
     await updateOwnProfile(userId, input);
     return reply.send({ ok: true });
   });
+
+  app.get("/profile/me", { preHandler: [authenticate] }, async (request, reply) => {
+    const userId = (request as any).user.sub;
+    try {
+      return reply.send(await getPublicProfile(userId, userId));
+    } catch (err: any) {
+      return reply.code(err.statusCode ?? 500).send({ error: err.message });
+    }
+  });
 }
