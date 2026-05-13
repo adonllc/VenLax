@@ -8,13 +8,16 @@ COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY apps/admin/package.json ./apps/admin/
 COPY packages/ui/package.json ./packages/ui/
 COPY packages/shared/package.json ./packages/shared/
-RUN pnpm install --frozen-lockfile --filter admin...
+# Install admin deps, then shared's own devDeps (needed for tsc)
+RUN pnpm install --frozen-lockfile --filter admin... && \
+    pnpm install --frozen-lockfile --filter @venlaxiq/shared
 
 # ── Stage 2: build ────────────────────────────────────────────────────────────
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/apps/admin/node_modules ./apps/admin/node_modules
+COPY --from=deps /app/packages/shared/node_modules ./packages/shared/node_modules
 COPY package.json pnpm-workspace.yaml ./
 COPY packages/shared ./packages/shared
 COPY packages/ui ./packages/ui
@@ -29,10 +32,9 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3002
-RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
+RUN apk add --no-cache wget && addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
 COPY --from=builder --chown=nodejs:nodejs /app/apps/admin/.next/standalone ./
 COPY --from=builder --chown=nodejs:nodejs /app/apps/admin/.next/static ./apps/admin/.next/static
-COPY --from=builder --chown=nodejs:nodejs /app/apps/admin/public ./apps/admin/public 2>/dev/null || true
 USER nodejs
 EXPOSE 3002
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
