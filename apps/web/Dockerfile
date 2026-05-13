@@ -36,7 +36,6 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN apk add --no-cache wget && addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
 COPY --from=builder --chown=nodejs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=builder --chown=nodejs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=builder --chown=nodejs:nodejs /app/apps/web/public ./apps/web/public
 USER nodejs
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
