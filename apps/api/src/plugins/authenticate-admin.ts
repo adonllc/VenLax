@@ -14,7 +14,7 @@ export function verifyAdminToken(token: string): AdminPayload {
 }
 
 export function signAdminToken(payload: AdminPayload, expiresIn = "8h"): string {
-  return jwt.sign(payload, ADMIN_JWT_SECRET, { expiresIn });
+  return jwt.sign(payload, ADMIN_JWT_SECRET, { expiresIn: expiresIn as any });
 }
 
 export async function authenticateAdmin(

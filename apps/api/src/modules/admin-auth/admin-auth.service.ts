@@ -3,7 +3,8 @@ import { adminUsers } from "../../db/schema";
 import { eq } from "drizzle-orm";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
-import { authenticator } from "otplib";
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { authenticator } = require("otplib") as { authenticator: { verify: (o: { token: string; secret: string }) => boolean; generateSecret: () => string } };
 import jwt from "jsonwebtoken";
 
 const scryptAsync = promisify(scrypt);
@@ -37,7 +38,7 @@ export async function adminLogin(input: { email: string; password: string }) {
   const partialToken = jwt.sign(
     { adminId: admin.id, step: "2fa" },
     ADMIN_JWT_SECRET,
-    { expiresIn: "5m" }
+    { expiresIn: "5m" as any }
   );
 
   return { partialToken };
@@ -63,7 +64,7 @@ export async function adminVerify2fa(input: { partialToken: string; totpCode: st
   const token = jwt.sign(
     { adminId: admin.id, email: admin.email, role: admin.role },
     ADMIN_JWT_SECRET,
-    { expiresIn: "8h" }
+    { expiresIn: "8h" as any }
   );
 
   return { token, admin: { id: admin.id, email: admin.email, role: admin.role } };
