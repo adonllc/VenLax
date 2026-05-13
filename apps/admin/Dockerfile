@@ -10,7 +10,8 @@ COPY packages/ui/package.json ./packages/ui/
 COPY packages/shared/package.json ./packages/shared/
 # Install admin deps, then shared's own devDeps (needed for tsc)
 RUN pnpm install --frozen-lockfile --filter admin... && \
-    pnpm install --frozen-lockfile --filter @venlaxiq/shared
+    pnpm install --frozen-lockfile --filter @venlaxiq/shared && \
+    pnpm install --frozen-lockfile --filter @venlaxiq/ui
 
 # ── Stage 2: build ────────────────────────────────────────────────────────────
 FROM base AS builder
@@ -18,6 +19,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/apps/admin/node_modules ./apps/admin/node_modules
 COPY --from=deps /app/packages/shared/node_modules ./packages/shared/node_modules
+COPY --from=deps /app/packages/ui/node_modules ./packages/ui/node_modules
 COPY package.json pnpm-workspace.yaml ./
 COPY packages/shared ./packages/shared
 COPY packages/ui ./packages/ui
