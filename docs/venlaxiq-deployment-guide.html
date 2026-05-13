@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VenlaxIQ Deployment Guide</title>
+  <style>
+    :root {
+      --green: #00D46A;
+      --bg: #ffffff;
+      --surface: #f8f9fa;
+      --border: #e5e7eb;
+      --text: #111827;
+      --muted: #6b7280;
+      --code-bg: #1e1e2e;
+      --code-text: #cdd6f4;
+      --accent: #0f172a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    .cover {
+      background: var(--accent);
+      color: #fff;
+      padding: 60px 48px 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .cover::after {
+      content: "";
+      position: absolute;
+      bottom: -40px; right: -40px;
+      width: 300px; height: 300px;
+      background: var(--green);
+      border-radius: 50%;
+      opacity: 0.08;
+    }
+    .cover .logo {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 20px;
+    }
+    .cover h1 {
+      font-size: 38px;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+    .cover p {
+      font-size: 16px;
+      color: #9ca3af;
+      max-width: 540px;
+    }
+    .cover .meta {
+      margin-top: 32px;
+      display: flex;
+      gap: 24px;
+    }
+    .cover .meta span {
+      font-size: 12px;
+      color: #6b7280;
+      font-weight: 500;
+    }
+    .cover .meta strong {
+      color: #d1d5db;
+    }
+
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 48px 40px 80px;
+    }
+
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-bottom: 48px;
+    }
+    .toc h2 {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .toc ol {
+      padding-left: 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px 32px;
+    }
+    .toc li {
+      font-size: 14px;
+      color: var(--text);
+    }
+    .toc a { color: var(--text); text-decoration: none; }
+    .toc a:hover { color: var(--green); }
+
+    .accounts-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      font-size: 14px;
+    }
+    .accounts-table th {
+      background: var(--accent);
+      color: #fff;
+      text-align: left;
+      padding: 10px 14px;
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+    .accounts-table th:first-child { border-radius: 8px 0 0 0; }
+    .accounts-table th:last-child { border-radius: 0 8px 0 0; }
+    .accounts-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .accounts-table tr:nth-child(even) td { background: var(--surface); }
+    .accounts-table a { color: #2563eb; font-size: 13px; }
+
+    section {
+      margin-bottom: 52px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--border);
+    }
+    .section-number {
+      width: 36px;
+      height: 36px;
+      background: var(--green);
+      color: #0d0d0d;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .section-header h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    p { margin-bottom: 12px; }
+
+    ol, ul {
+      padding-left: 22px;
+      margin-bottom: 14px;
+    }
+    li { margin-bottom: 6px; }
+    li::marker { color: var(--green); font-weight: 700; }
+
+    code {
+      font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+      font-size: 13px;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 1px 5px;
+      color: #0f172a;
+    }
+
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      border-radius: 10px;
+      padding: 18px 20px;
+      overflow-x: auto;
+      margin: 14px 0 20px;
+      font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+    pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      color: inherit;
+      font-size: inherit;
+    }
+    .comment { color: #6272a4; }
+    .key { color: #8be9fd; }
+    .val { color: #f1fa8c; }
+
+    .callout {
+      border-left: 4px solid var(--green);
+      background: #f0fdf4;
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 14px;
+    }
+    .callout.warn {
+      border-color: #f59e0b;
+      background: #fffbeb;
+    }
+    .callout strong { display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .callout.warn strong { color: #92400e; }
+
+    .checklist {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-top: 48px;
+    }
+    .checklist h2 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .check-item:last-child { border-bottom: none; }
+    .checkbox {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--border);
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .cost-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .cost-row:last-child { border-bottom: none; }
+    .free { color: var(--green); font-weight: 700; font-size: 13px; }
+    .paid { color: #ef4444; font-weight: 700; font-size: 13px; }
+
+    @media print {
+      .cover { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .section-number { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      pre { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      section { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="logo">VenlaxIQ</div>
+  <h1>Production Deployment<br>Guide</h1>
+  <p>Step-by-step instructions to take VenlaxIQ from your local machine to live — including API, web app, admin panel, and mobile app.</p>
+  <div class="meta">
+    <span><strong>Version</strong> Phase 3 Complete</span>
+    <span><strong>Date</strong> May 2026</span>
+    <span><strong>Audience</strong> Beginner Friendly</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="toc">
+    <h2>Table of Contents</h2>
+    <ol>
+      <li><a href="#accounts">Create Accounts</a></li>
+      <li><a href="#database">Set Up Database</a></li>
+      <li><a href="#redis">Set Up Redis</a></li>
+      <li><a href="#api">Deploy the API</a></li>
+      <li><a href="#web">Deploy the Web App</a></li>
+      <li><a href="#admin">Deploy the Admin App</a></li>
+      <li><a href="#stripe">Set Up Stripe Webhooks</a></li>
+      <li><a href="#admin-account">Create Admin Account</a></li>
+      <li><a href="#mobile">Build the Mobile App</a></li>
+      <li><a href="#seed">Seed Content</a></li>
+    </ol>
+  </div>
+
+  <!-- Part 1 -->
+  <section id="accounts">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <h2>Create Accounts (Do These First)</h2>
+    </div>
+    <p>Sign up for each service below. All are free to start — no credit card needed except Stripe (which only charges when users pay you).</p>
+
+    <table class="accounts-table">
+      <thead>
+        <tr>
+          <th>Service</th>
+          <th>What It's For</th>
+          <th>URL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Railway</strong></td>
+          <td>Hosts your API + database + Redis</td>
+          <td><a href="https://railway.app">railway.app</a></td>
+        </tr>
+        <tr>
+          <td><strong>Vercel</strong></td>
+          <td>Hosts your web and admin apps</td>
+          <td><a href="https://vercel.com">vercel.com</a></td>
+        </tr>
+        <tr>
+          <td><strong>Upstash</strong></td>
+          <td>Managed Redis for background jobs</td>
+          <td><a href="https://upstash.com">upstash.com</a></td>
+        </tr>
+        <tr>
+          <td><strong>Stripe</strong></td>
+          <td>Subscription payments</td>
+          <td><a href="https://stripe.com">stripe.com</a></td>
+        </tr>
+        <tr>
+          <td><strong>Expo</strong></td>
+          <td>Mobile app builds</td>
+          <td><a href="https://expo.dev">expo.dev</a></td>
+        </tr>
+        <tr>
+          <td><strong>Anthropic</strong></td>
+          <td>AI features (Claude)</td>
+          <td><a href="https://console.anthropic.com">console.anthropic.com</a></td>
+        </tr>
+        <tr>
+          <td><strong>HuggingFace</strong></td>
+          <td>Sentiment analysis for market insights</td>
+          <td><a href="https://huggingface.co">huggingface.co</a></td>
+        </tr>
+        <tr>
+          <td><strong>NewsAPI</strong></td>
+          <td>News feed for AI insight pipeline</td>
+          <td><a href="https://newsapi.org">newsapi.org</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout warn">
+      <strong>Paid — Only For Mobile Push Notifications</strong>
+      Apple Developer Program ($99/year) at developer.apple.com for iOS push notifications. Firebase (free) at console.firebase.google.com for Android. You can skip both if you're testing without push notifications first.
+    </div>
+  </section>
+
+  <!-- Part 2 -->
+  <section id="database">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <h2>Set Up the Database (Railway)</h2>
+    </div>
+    <ol>
+      <li>Go to <strong>railway.app</strong> → click <strong>New Project</strong> → <strong>Deploy a template</strong> → search <strong>PostgreSQL</strong> → click Deploy</li>
+      <li>Once it's running, click on the Postgres service → <strong>Variables</strong> tab → copy the <code>DATABASE_URL</code> value (it looks like <code>postgresql://postgres:...@...railway.app:5432/railway</code>)</li>
+      <li>Open your terminal in the VenlaxIQ folder and run:</li>
+    </ol>
+    <pre><code><span class="comment"># Replace the URL with your actual Railway DATABASE_URL</span>
+DATABASE_URL="postgresql://postgres:xxx@xxx.railway.app:5432/railway" pnpm db:migrate</code></pre>
+    <div class="callout">
+      <strong>What this does</strong>
+      Creates all your database tables in the cloud. You only need to run this once (and again each time you add new tables in the future).
+    </div>
+  </section>
+
+  <!-- Part 3 -->
+  <section id="redis">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <h2>Set Up Redis (Upstash)</h2>
+    </div>
+    <ol>
+      <li>Go to <strong>upstash.com</strong> → create account → click <strong>Create Database</strong></li>
+      <li>Name it <code>venlaxiq</code>, choose the region closest to your users, click <strong>Create</strong></li>
+      <li>On the database page, copy the <strong>Redis URL</strong> — it looks like <code>rediss://...upstash.io:6379</code></li>
+    </ol>
+    <div class="callout">
+      <strong>What this does</strong>
+      Redis powers your background job queues (AI insights, push notifications, settlement). Upstash is serverless so it costs nothing when idle.
+    </div>
+  </section>
+
+  <!-- Part 4 -->
+  <section id="api">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <h2>Deploy the API (Railway)</h2>
+    </div>
+    <ol>
+      <li>In Railway → <strong>New Project</strong> → <strong>Deploy from GitHub repo</strong> → connect GitHub → select your VenLax repo</li>
+      <li>Set these build settings:
+        <ul>
+          <li><strong>Root Directory:</strong> <code>apps/api</code></li>
+          <li><strong>Build Command:</strong> <code>pnpm install && pnpm build</code></li>
+          <li><strong>Start Command:</strong> <code>node dist/index.js</code></li>
+        </ul>
+      </li>
+      <li>Go to the <strong>Variables</strong> tab and add every variable below:</li>
+    </ol>
+
+    <pre><code><span class="key">DATABASE_URL</span>          = <span class="val">postgresql://postgres:xxx@xxx.railway.app:5432/railway</span>
+<span class="key">REDIS_URL</span>             = <span class="val">rediss://xxx.upstash.io:6379</span>
+<span class="key">JWT_SECRET</span>            = <span class="val">run: node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"</span>
+<span class="key">ADMIN_JWT_SECRET</span>      = <span class="val">run same command again for a different value</span>
+<span class="key">ANTHROPIC_API_KEY</span>     = <span class="val">from console.anthropic.com → API Keys</span>
+<span class="key">HF_API_KEY</span>            = <span class="val">from huggingface.co → Settings → Access Tokens</span>
+<span class="key">NEWSAPI_KEY</span>           = <span class="val">from newsapi.org → account page</span>
+<span class="key">STRIPE_SECRET_KEY</span>     = <span class="val">from stripe.com → Developers → API Keys → Secret key (sk_live_...)</span>
+<span class="key">STRIPE_WEBHOOK_SECRET</span> = <span class="val">leave blank for now — fill in Part 7</span>
+<span class="key">PORT</span>                  = <span class="val">3001</span>
+<span class="key">NODE_ENV</span>              = <span class="val">production</span></code></pre>
+
+    <ol start="4">
+      <li>Click <strong>Deploy</strong> and wait for the green checkmark</li>
+      <li>Click on the service → <strong>Settings</strong> → copy the public URL (e.g. <code>https://venlaxiq-api.up.railway.app</code>). <strong>Save this — you'll need it in the next steps.</strong></li>
+    </ol>
+  </section>
+
+  <!-- Part 5 -->
+  <section id="web">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <h2>Deploy the Web App (Vercel)</h2>
+    </div>
+    <ol>
+      <li>Go to <strong>vercel.com</strong> → <strong>New Project</strong> → Import your GitHub repo</li>
+      <li>Set:
+        <ul>
+          <li><strong>Framework:</strong> Next.js (auto-detected)</li>
+          <li><strong>Root Directory:</strong> <code>apps/web</code></li>
+        </ul>
+      </li>
+      <li>Under <strong>Environment Variables</strong>, add:</li>
+    </ol>
+
+    <pre><code><span class="key">API_URL</span>               = <span class="val">https://venlaxiq-api.up.railway.app</span>
+<span class="key">NEXT_PUBLIC_API_URL</span>   = <span class="val">https://venlaxiq-api.up.railway.app</span>
+<span class="key">NEXT_PUBLIC_WS_URL</span>    = <span class="val">wss://venlaxiq-api.up.railway.app</span></code></pre>
+
+    <ol start="4">
+      <li>Click <strong>Deploy</strong>. Vercel gives you a URL like <code>venlaxiq-web.vercel.app</code> — save this.</li>
+    </ol>
+  </section>
+
+  <!-- Part 6 -->
+  <section id="admin">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <h2>Deploy the Admin App (Vercel)</h2>
+    </div>
+    <ol>
+      <li>In Vercel → <strong>New Project</strong> → same GitHub repo</li>
+      <li>Set:
+        <ul>
+          <li><strong>Root Directory:</strong> <code>apps/admin</code></li>
+        </ul>
+      </li>
+      <li>Environment variables:</li>
+    </ol>
+
+    <pre><code><span class="key">API_URL</span>               = <span class="val">https://venlaxiq-api.up.railway.app</span>
+<span class="key">ADMIN_JWT_SECRET</span>      = <span class="val">same value you used in Part 4</span></code></pre>
+
+    <ol start="4">
+      <li>Click <strong>Deploy</strong> → save your admin URL (e.g. <code>venlaxiq-admin.vercel.app</code>)</li>
+    </ol>
+  </section>
+
+  <!-- Part 7 -->
+  <section id="stripe">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <h2>Set Up Stripe Webhooks</h2>
+    </div>
+    <div class="callout warn">
+      <strong>Important</strong>
+      Without this step, users who pay via Stripe will stay on the free tier forever. This wires Stripe back to your API.
+    </div>
+    <ol>
+      <li>Go to <strong>stripe.com</strong> → Developers → Webhooks → <strong>Add endpoint</strong></li>
+      <li>Set the URL to: <code>https://your-railway-api-url/subscriptions/webhook</code></li>
+      <li>Under <strong>Events to listen to</strong>, select:
+        <ul>
+          <li><code>checkout.session.completed</code></li>
+          <li><code>customer.subscription.deleted</code></li>
+        </ul>
+      </li>
+      <li>Click <strong>Add endpoint</strong> → copy the <strong>Signing secret</strong> (starts with <code>whsec_</code>)</li>
+      <li>Go back to Railway → your API service → Variables → update <code>STRIPE_WEBHOOK_SECRET</code> with this value. Railway will auto-redeploy.</li>
+    </ol>
+  </section>
+
+  <!-- Part 8 -->
+  <section id="admin-account">
+    <div class="section-header">
+      <div class="section-number">8</div>
+      <h2>Create Your First Admin Account</h2>
+    </div>
+    <p>This is a one-time setup. Run this command in your terminal (replace the DATABASE_URL and your email/password):</p>
+
+    <pre><code>DATABASE_URL="postgresql://postgres:xxx@xxx.railway.app:5432/railway" \
+node -e "
+const { seedAdmin } = require('./apps/api/dist/modules/admin-auth/admin-auth.service');
+seedAdmin('your@email.com', 'your-strong-password').then(secret => {
+  console.log('TOTP Secret:', secret);
+});
+"</code></pre>
+
+    <ol>
+      <li>Copy the TOTP secret that prints in the terminal</li>
+      <li>Open <strong>Google Authenticator</strong> or <strong>Authy</strong> on your phone → Add account → Enter setup key → paste the secret</li>
+      <li>Go to <code>venlaxiq-admin.vercel.app/login</code> → enter email + password → enter the 6-digit code from the authenticator app</li>
+    </ol>
+
+    <div class="callout">
+      <strong>Keep your TOTP secret safe</strong>
+      Store it in a password manager. If you lose it, you'll need to delete the admin record from the database and run seedAdmin again.
+    </div>
+  </section>
+
+  <!-- Part 9 -->
+  <section id="mobile">
+    <div class="section-header">
+      <div class="section-number">9</div>
+      <h2>Build the Mobile App (Expo EAS)</h2>
+    </div>
+    <ol>
+      <li>Install EAS CLI globally:</li>
+    </ol>
+    <pre><code>npm install -g eas-cli</code></pre>
+
+    <ol start="2">
+      <li>Log in to Expo:</li>
+    </ol>
+    <pre><code>eas login</code></pre>
+
+    <ol start="3">
+      <li>Create <code>apps/mobile/eas.json</code> with this content:</li>
+    </ol>
+    <pre><code>{
+  "build": {
+    "production": {
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://your-railway-api-url"
+      }
+    }
+  }
+}</code></pre>
+
+    <ol start="4">
+      <li>Build for iOS (requires Apple Developer account):</li>
+    </ol>
+    <pre><code>cd apps/mobile
+eas build --platform ios --profile production</code></pre>
+
+    <ol start="5">
+      <li>Build for Android:</li>
+    </ol>
+    <pre><code>eas build --platform android --profile production</code></pre>
+    <p>Builds take ~15 minutes. You'll get a download link when done. EAS handles code signing automatically.</p>
+  </section>
+
+  <!-- Part 10 -->
+  <section id="seed">
+    <div class="section-header">
+      <div class="section-number">10</div>
+      <h2>Seed Content</h2>
+    </div>
+    <p>Run these once to populate the reward catalog and daily missions:</p>
+    <pre><code>DATABASE_URL="postgresql://postgres:xxx@xxx.railway.app:5432/railway" pnpm --filter api seed:rewards
+DATABASE_URL="postgresql://postgres:xxx@xxx.railway.app:5432/railway" pnpm --filter api seed:missions</code></pre>
+  </section>
+
+  <!-- Checklist -->
+  <div class="checklist">
+    <h2>Final Checklist</h2>
+
+    <div class="check-item"><div class="checkbox"></div><span>Railway Postgres created + <code>pnpm db:migrate</code> run</span></div>
+    <div class="check-item"><div class="checkbox"></div><span>Upstash Redis created</span></div>
+    <div class="check-item"><div class="checkbox"></div><span>API deployed to Railway with all environment variables</span></div>
+    <div class="check-item"><div class="checkbox"></div><span>Web app deployed to Vercel</span></div>
+    <div class="check-item"><div class="checkbox"></div><span>Admin app deployed to Vercel</span></div>
+    <div class="check-item"><div class="checkbox"></div><span>Stripe webhook created and <code>STRIPE_WEBHOOK_SECRET</code> set</span></div>
+    <div class="check-item"><div class="checkbox"></div><span>Admin account created and TOTP saved in authenticator app</span></div>
+    <div class="check-item"><div class="checkbox"></div><span>Mobile app built via EAS</span></div>
+    <div class="check-item"><div class="checkbox"></div><span>Rewards catalog and missions seeded</span></div>
+  </div>
+
+  <!-- Cost Summary -->
+  <div class="checklist" style="margin-top: 24px;">
+    <h2>Cost Summary</h2>
+    <div class="cost-row"><span>Railway (API + Postgres)</span><span class="free">Free tier available</span></div>
+    <div class="cost-row"><span>Vercel (Web + Admin)</span><span class="free">Free tier available</span></div>
+    <div class="cost-row"><span>Upstash Redis</span><span class="free">Free tier available</span></div>
+    <div class="cost-row"><span>Stripe</span><span class="free">Free — charges only on transactions</span></div>
+    <div class="cost-row"><span>Expo EAS Build</span><span class="free">Free tier (30 builds/month)</span></div>
+    <div class="cost-row"><span>Apple Developer Program (iOS push)</span><span class="paid">$99/year</span></div>
+    <div class="cost-row"><span>Firebase (Android push)</span><span class="free">Free</span></div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<h2>Phase 3 has three independent apps — which do we build first?</h2>
+<p class="subtitle">Each app is a full implementation effort. Pick the one that delivers the most value fastest.</p>
+
+<div class="options">
+  <div class="option" data-choice="web" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Web App <span style="font-size:12px;color:#8A8A8A;font-weight:400">(Next.js 15 · apps/web)</span></h3>
+      <p>Public-facing product — Home feed, Market browser, Forecast entry, Reviews, Rewards wallet, Profile. SSR for SEO + OG cards. WebSocket live prices. Keyboard shortcuts.</p>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <span style="background:#00D46A22;color:#00D46A;padding:3px 8px;border-radius:4px;font-size:11px">User-facing</span>
+        <span style="background:#FFE60022;color:#FFE600;padding:3px 8px;border-radius:4px;font-size:11px">SEO / OG sharing</span>
+        <span style="background:#FF6B0022;color:#FF6B00;padding:3px 8px;border-radius:4px;font-size:11px">Most complex</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="admin" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Admin Panel <span style="font-size:12px;color:#8A8A8A;font-weight:400">(Next.js 15 · apps/admin)</span></h3>
+      <p>Internal tool — Market management, User management, FP adjustments (supervisor approval), Review moderation queue, Basic analytics dashboard. 2FA gated.</p>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <span style="background:#00D46A22;color:#00D46A;padding:3px 8px;border-radius:4px;font-size:11px">Operational necessity</span>
+        <span style="background:#FFE60022;color:#FFE600;padding:3px 8px;border-radius:4px;font-size:11px">Fastest to build</span>
+        <span style="background:#FF6B0022;color:#FF6B00;padding:3px 8px;border-radius:4px;font-size:11px">Unlocks product use</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="mobile" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Mobile App <span style="font-size:12px;color:#8A8A8A;font-weight:400">(Expo 51 · React Native · apps/mobile)</span></h3>
+      <p>iOS + Android — Tab bar: Home | Forecast | Reviews | Rewards | Profile. Push notification deep links. Native animations. Bottom sheets. Streak multiplier UI.</p>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <span style="background:#00D46A22;color:#00D46A;padding:3px 8px;border-radius:4px;font-size:11px">Primary distribution</span>
+        <span style="background:#FFE60022;color:#FFE600;padding:3px 8px;border-radius:4px;font-size:11px">App Store / Play Store</span>
+        <span style="background:#FF6B0022;color:#FF6B00;padding:3px 8px;border-radius:4px;font-size:11px">Longest build time</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="all" onclick="toggleSelect(this)">
+    <div class="letter">D</div>
+    <div class="content">
+      <h3>All three — parallel specs, sequential build</h3>
+      <p>Design all three apps together now, then build in recommended order: Admin → Web → Mobile. One comprehensive spec, three implementation plans.</p>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <span style="background:#00D46A22;color:#00D46A;padding:3px 8px;border-radius:4px;font-size:11px">Full picture upfront</span>
+        <span style="background:#FFE60022;color:#FFE600;padding:3px 8px;border-radius:4px;font-size:11px">Consistent design</span>
+        <span style="background:#FF6B0022;color:#FF6B00;padding:3px 8px;border-radius:4px;font-size:11px">Longer brainstorm</span>
+      </div>
+    </div>
+  </div>
+</div>

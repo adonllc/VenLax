@@ -1,0 +1,97 @@
+<h2>Design — Section 5: Mobile App (apps/mobile)</h2>
+<p class="subtitle">Expo Router v3 · 5-tab bottom bar · React Query · Push deep links · Native bottom sheets</p>
+
+<!-- Tab bar -->
+<div style="margin-bottom:20px">
+  <div style="color:#8A8A8A;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Bottom Tab Bar — app/(tabs)/_layout.tsx</div>
+  <div style="display:flex;gap:0;border:1px solid #2E2E2E;border-radius:12px;overflow:hidden">
+    <div style="flex:1;background:#181818;padding:12px;text-align:center;border-right:1px solid #2E2E2E">
+      <div style="font-size:18px">🏠</div>
+      <div style="font-size:11px;color:#00D46A;font-weight:600;margin-top:4px">Home</div>
+      <div style="font-size:10px;color:#8A8A8A;margin-top:4px">Feed · missions · streak · AI signals</div>
+    </div>
+    <div style="flex:1;background:#181818;padding:12px;text-align:center;border-right:1px solid #2E2E2E">
+      <div style="font-size:18px">📈</div>
+      <div style="font-size:11px;color:#00D46A;font-weight:600;margin-top:4px">Forecast</div>
+      <div style="font-size:10px;color:#8A8A8A;margin-top:4px">Market browser · positions</div>
+    </div>
+    <div style="flex:1;background:#181818;padding:12px;text-align:center;border-right:1px solid #2E2E2E">
+      <div style="font-size:18px">⭐</div>
+      <div style="font-size:11px;color:#00D46A;font-weight:600;margin-top:4px">Reviews</div>
+      <div style="font-size:10px;color:#8A8A8A;margin-top:4px">Browse · submit</div>
+    </div>
+    <div style="flex:1;background:#181818;padding:12px;text-align:center;border-right:1px solid #2E2E2E">
+      <div style="font-size:18px">🎁</div>
+      <div style="font-size:11px;color:#00D46A;font-weight:600;margin-top:4px">Rewards</div>
+      <div style="font-size:10px;color:#8A8A8A;margin-top:4px">Wallet · catalog</div>
+    </div>
+    <div style="flex:1;background:#181818;padding:12px;text-align:center">
+      <div style="font-size:18px">👤</div>
+      <div style="font-size:11px;color:#00D46A;font-weight:600;margin-top:4px">Profile</div>
+      <div style="font-size:10px;color:#8A8A8A;margin-top:4px">Badges · XP · settings</div>
+    </div>
+  </div>
+</div>
+
+<!-- File tree -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+
+  <div style="background:#181818;border:1px solid #2E2E2E;border-radius:10px;padding:14px">
+    <div style="color:#8A8A8A;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Expo Router File Structure</div>
+    <pre style="font-size:11px;color:#F5F5F5;line-height:1.8;margin:0;font-family:'JetBrains Mono',monospace">app/
+  _layout.tsx          <span style="color:#8A8A8A">← ThemeProvider + QueryClient</span>
+  (auth)/
+    _layout.tsx        <span style="color:#8A8A8A">← redirect if authed</span>
+    login.tsx
+    register.tsx
+  (tabs)/
+    _layout.tsx        <span style="color:#8A8A8A">← BottomTabBar</span>
+    index.tsx          <span style="color:#8A8A8A">← Home feed</span>
+    forecast.tsx       <span style="color:#8A8A8A">← Market browser</span>
+    reviews.tsx        <span style="color:#8A8A8A">← Review browse</span>
+    rewards.tsx        <span style="color:#8A8A8A">← Wallet + catalog</span>
+    profile.tsx        <span style="color:#8A8A8A">← Own profile</span>
+  markets/
+    [id].tsx           <span style="color:#8A8A8A">← Detail + entry sheet</span>
+  reviews/
+    [productId].tsx    <span style="color:#8A8A8A">← Product reviews</span>
+    new.tsx            <span style="color:#8A8A8A">← Submit + receipt upload</span>
+  profile/
+    [userId].tsx       <span style="color:#8A8A8A">← Public profile</span>
+  leaderboard.tsx
+  rewards/
+    redeem/[id].tsx    <span style="color:#8A8A8A">← Redemption confirm</span>
+  settings/
+    index.tsx
+    subscription.tsx   <span style="color:#8A8A8A">← Stripe upgrade</span></pre>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div style="background:#181818;border:1px solid #00D46A33;border-radius:10px;padding:12px">
+      <div style="color:#00D46A;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Mobile-Specific UX Patterns</div>
+      <div style="font-size:11px;color:#8A8A8A;line-height:1.7">
+        <b style="color:#F5F5F5">Forecast entry</b> — BottomSheet (not inline widget). Slides up from market card tap. YES/NO buttons with haptic feedback.<br><br>
+        <b style="color:#F5F5F5">Daily login claim</b> — BottomSheet auto-shows on app open if streak not claimed today.<br><br>
+        <b style="color:#F5F5F5">Settlement result</b> — Push notification → deep link → /markets/[id] showing SettlementBanner.<br><br>
+        <b style="color:#F5F5F5">Pull-to-refresh</b> — on all list screens (markets, reviews, leaderboard).<br><br>
+        <b style="color:#F5F5F5">Skeleton loaders</b> — on MarketCard, ReviewCard, LeaderboardRow while fetching.
+      </div>
+    </div>
+
+    <div style="background:#181818;border:1px solid #FFE60033;border-radius:10px;padding:12px">
+      <div style="color:#FFE600;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Push Notification Deep Links</div>
+      <div style="font-size:11px;color:#8A8A8A;line-height:1.7">
+        Market closing soon → <code style="background:#242424;padding:1px 4px;border-radius:3px">markets/[id]</code><br>
+        Settlement result → <code style="background:#242424;padding:1px 4px;border-radius:3px">markets/[id]</code><br>
+        Reward redeemed → <code style="background:#242424;padding:1px 4px;border-radius:3px">rewards/redeem/[id]</code><br>
+        Daily FP unused at 8pm → <code style="background:#242424;padding:1px 4px;border-radius:3px">(tabs)/index</code><br>
+        Leaderboard rank changed → <code style="background:#242424;padding:1px 4px;border-radius:3px">leaderboard</code>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="padding:14px;background:#0D0D0D;border:1px solid #2E2E2E;border-radius:8px;font-size:13px;color:#8A8A8A">
+  Does the mobile structure look right? Any screens to add or any native behaviour to call out?
+</div>

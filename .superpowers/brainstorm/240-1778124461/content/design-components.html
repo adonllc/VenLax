@@ -1,0 +1,87 @@
+<h2>Design — Section 2: packages/ui Component Library</h2>
+<p class="subtitle">All components built web-first (React + Tailwind), then RN variants added alongside. Same import path, platform branching via package.json <code style="background:#242424;padding:1px 5px;border-radius:4px">exports</code>.</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:24px">
+
+  <div style="background:#181818;border:1px solid #2E2E2E;border-radius:12px;padding:14px">
+    <div style="color:#8A8A8A;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Atoms</div>
+    <div style="display:flex;flex-direction:column;gap:6px;font-size:12px;color:#F5F5F5">
+      <span>Button <span style="color:#8A8A8A">primary · secondary · ghost · danger</span></span>
+      <span>Input <span style="color:#8A8A8A">text · password · search</span></span>
+      <span>Select <span style="color:#8A8A8A">dropdown</span></span>
+      <span>Avatar <span style="color:#8A8A8A">image + initials fallback</span></span>
+      <span>Badge <span style="color:#8A8A8A">chip / pill</span></span>
+      <span>Spinner <span style="color:#8A8A8A">loading indicator</span></span>
+      <span>Divider</span>
+      <span>Toast / Alert <span style="color:#8A8A8A">success · error · info</span></span>
+    </div>
+  </div>
+
+  <div style="background:#181818;border:1px solid #00D46A33;border-radius:12px;padding:14px">
+    <div style="color:#00D46A;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Forecast Domain</div>
+    <div style="display:flex;flex-direction:column;gap:6px;font-size:12px;color:#F5F5F5">
+      <span>MarketCard <span style="color:#8A8A8A">title, prob%, close time, status</span></span>
+      <span>ProbabilityBar <span style="color:#8A8A8A">green/orange split</span></span>
+      <span>ForecastEntryWidget <span style="color:#8A8A8A">YES/NO + FP slider</span></span>
+      <span>PositionRow <span style="color:#8A8A8A">open position + withdraw</span></span>
+      <span>MarketStatusChip <span style="color:#8A8A8A">draft→settled lifecycle</span></span>
+      <span>CategoryPill <span style="color:#8A8A8A">Sports · Politics · Open</span></span>
+      <span>InsightCard <span style="color:#8A8A8A">AI signal, confidence stars</span></span>
+      <span>SettlementBanner <span style="color:#8A8A8A">you earned X FP</span></span>
+    </div>
+  </div>
+
+  <div style="background:#181818;border:1px solid #FFE60033;border-radius:12px;padding:14px">
+    <div style="color:#FFE600;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">FP Economy</div>
+    <div style="display:flex;flex-direction:column;gap:6px;font-size:12px;color:#F5F5F5">
+      <span>FPBadge <span style="color:#8A8A8A">⚡ lemon amount display</span></span>
+      <span>StreakBanner <span style="color:#8A8A8A">day count, multiplier flame</span></span>
+      <span>MissionCard <span style="color:#8A8A8A">task, FP reward, progress</span></span>
+      <span>BadgeDisplay <span style="color:#8A8A8A">icon, name, locked/unlocked</span></span>
+      <span>XPProgressBar <span style="color:#8A8A8A">level name → next level</span></span>
+      <span>RewardCard <span style="color:#8A8A8A">gift card, FP cost, category</span></span>
+      <span>WalletSummary <span style="color:#8A8A8A">earned FP + expiry countdown</span></span>
+      <span>SubscriptionBadge <span style="color:#8A8A8A">Free · Pro · Elite chip</span></span>
+    </div>
+  </div>
+
+  <div style="background:#181818;border:1px solid #2E2E2E;border-radius:12px;padding:14px">
+    <div style="color:#8A8A8A;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Reviews</div>
+    <div style="display:flex;flex-direction:column;gap:6px;font-size:12px;color:#F5F5F5">
+      <span>ReviewCard <span style="color:#8A8A8A">stars, verified badge, FTC text</span></span>
+      <span>VerifiedBadge <span style="color:#8A8A8A">green ✓ with glow</span></span>
+      <span>HelpfulVoteRow <span style="color:#8A8A8A">👍 helpful / not helpful</span></span>
+      <span>ReviewForm <span style="color:#8A8A8A">text, stars, receipt upload</span></span>
+      <span>TrustSummary <span style="color:#8A8A8A">N verified reviews, avg stars</span></span>
+    </div>
+  </div>
+
+  <div style="background:#181818;border:1px solid #2E2E2E;border-radius:12px;padding:14px">
+    <div style="color:#8A8A8A;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Social + Profile</div>
+    <div style="display:flex;flex-direction:column;gap:6px;font-size:12px;color:#F5F5F5">
+      <span>LeaderboardRow <span style="color:#8A8A8A">rank, avatar, accuracy%, FP</span></span>
+      <span>ProfileHeader <span style="color:#8A8A8A">avatar, tier, XP, follow btn</span></span>
+      <span>AccuracyGauge <span style="color:#8A8A8A">green/orange radial score</span></span>
+      <span>ForecastHistoryRow <span style="color:#8A8A8A">market, side, outcome</span></span>
+      <span>FollowButton <span style="color:#8A8A8A">follow / following toggle</span></span>
+    </div>
+  </div>
+
+  <div style="background:#181818;border:1px solid #2E2E2E;border-radius:12px;padding:14px">
+    <div style="color:#8A8A8A;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Layout + Navigation</div>
+    <div style="display:flex;flex-direction:column;gap:6px;font-size:12px;color:#F5F5F5">
+      <span>Sidebar <span style="color:#8A8A8A">admin + web desktop nav</span></span>
+      <span>TopBar <span style="color:#8A8A8A">logo, search, FP balance, avatar</span></span>
+      <span>BottomTabBar <span style="color:#8A8A8A">mobile 5-tab bar</span></span>
+      <span>PageContainer <span style="color:#8A8A8A">max-width + padding</span></span>
+      <span>BottomSheet <span style="color:#8A8A8A">RN modal sheet</span></span>
+      <span>EmptyState <span style="color:#8A8A8A">icon + message + CTA</span></span>
+      <span>NotificationBell <span style="color:#8A8A8A">unread count badge</span></span>
+    </div>
+  </div>
+
+</div>
+
+<div style="padding:14px;background:#0D0D0D;border:1px solid #2E2E2E;border-radius:8px;font-size:13px;color:#8A8A8A">
+  All components share the existing <code style="color:#F5F5F5">tokens.ts</code> design system. Web components use Tailwind classes; RN variants live in <code style="color:#F5F5F5">packages/ui/src/native/</code> with React Native StyleSheet. Does the component list look complete?
+</div>

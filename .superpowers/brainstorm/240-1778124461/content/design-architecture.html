@@ -1,0 +1,52 @@
+<h2>Design — Section 1: Architecture Overview</h2>
+<p class="subtitle">How the four deliverables fit together</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px">
+
+  <div style="background:#181818;border:1px solid #00D46A44;border-radius:12px;padding:16px">
+    <div style="color:#00D46A;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">① packages/ui — built first</div>
+    <div style="font-size:13px;color:#F5F5F5;margin-bottom:8px">Shared component library. Web exports React + Tailwind components. Mobile exports React Native StyleSheet variants under the same import paths.</div>
+    <div style="font-size:12px;color:#8A8A8A">MarketCard · ProbabilityBar · FPBadge · StreakBanner · Button · Input · InsightCard · ReviewCard · RewardCard · BadgeDisplay · LeaderboardRow · Avatar · BottomSheet</div>
+  </div>
+
+  <div style="background:#181818;border:1px solid #FF6B0044;border-radius:12px;padding:16px">
+    <div style="color:#FF6B00;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">② apps/admin — built second</div>
+    <div style="font-size:13px;color:#F5F5F5;margin-bottom:8px">Internal Next.js 15 panel. Separate <code style="background:#242424;padding:1px 5px;border-radius:4px">admin_users</code> table + JWT secret + TOTP 2FA. Sidebar layout, no bottom tabs.</div>
+    <div style="font-size:12px;color:#8A8A8A">Login · 2FA · Dashboard · Markets · Users · FP Adjustments · Review Moderation · Analytics</div>
+  </div>
+
+  <div style="background:#181818;border:1px solid #FFE60044;border-radius:12px;padding:16px">
+    <div style="color:#FFE600;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">③ apps/web — built third</div>
+    <div style="font-size:13px;color:#F5F5F5;margin-bottom:8px">Next.js 15 App Router. RSC for public/SEO pages (market detail, product reviews). React Query for all authenticated interactive surfaces.</div>
+    <div style="font-size:12px;color:#8A8A8A">Home · Markets · Forecast entry · Reviews · Rewards · Profile · Leaderboard · Subscriptions · Auth</div>
+  </div>
+
+  <div style="background:#181818;border:1px solid #8A8A8A44;border-radius:12px;padding:16px">
+    <div style="color:#8A8A8A;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">④ apps/mobile — built last</div>
+    <div style="font-size:13px;color:#F5F5F5;margin-bottom:8px">Expo Router v3. 5-tab bottom bar. Push notification deep links. Native bottom sheets. React Query for server state (same hooks as web).</div>
+    <div style="font-size:12px;color:#8A8A8A">Home · Forecast · Reviews · Rewards · Profile + all detail screens</div>
+  </div>
+
+</div>
+
+<div style="background:#181818;border:1px solid #2E2E2E;border-radius:12px;padding:16px;margin-bottom:24px">
+  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#8A8A8A;margin-bottom:12px">New API endpoints needed (backend additions)</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">
+    <span style="color:#F5F5F5"><code style="color:#00D46A">POST</code> /admin/auth/login</span>
+    <span style="color:#F5F5F5"><code style="color:#00D46A">GET</code> /admin/users · /admin/markets</span>
+    <span style="color:#F5F5F5"><code style="color:#00D46A">PATCH</code> /admin/users/:id/suspend</span>
+    <span style="color:#F5F5F5"><code style="color:#00D46A">POST</code> /admin/fp/adjust</span>
+    <span style="color:#F5F5F5"><code style="color:#00D46A">GET</code> /leaderboard</span>
+    <span style="color:#F5F5F5"><code style="color:#00D46A">GET/POST</code> /users/:id/follow</span>
+    <span style="color:#F5F5F5"><code style="color:#00D46A">GET</code> /rewards/catalog</span>
+    <span style="color:#F5F5F5"><code style="color:#00D46A">POST</code> /rewards/redeem (stub)</span>
+    <span style="color:#F5F5F5"><code style="color:#00D46A">GET</code> /missions/today</span>
+    <span style="color:#F5F5F5"><code style="color:#00D46A">GET</code> /badges · /profile/:id</span>
+    <span style="color:#F5F5F5"><code style="color:#00D46A">POST</code> /subscriptions/checkout (Stripe)</span>
+    <span style="color:#F5F5F5"><code style="color:#00D46A">GET</code> /admin/analytics</span>
+  </div>
+</div>
+
+<div style="padding:14px;background:#0D0D0D;border:1px solid #2E2E2E;border-radius:8px;font-size:13px;color:#8A8A8A">
+  Does this architecture look right? Any changes before we go section by section into components, screens, and routing?
+</div>

@@ -1,0 +1,115 @@
+<h2>Design — Section 3: Admin Panel (apps/admin)</h2>
+<p class="subtitle">Next.js 15 App Router · Sidebar layout · Separate admin_users table · TOTP 2FA enforced</p>
+
+<!-- Auth flow -->
+<div style="margin-bottom:20px">
+  <div style="color:#FF6B00;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Auth Flow (unauthenticated)</div>
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <div style="background:#181818;border:1px solid #2E2E2E;border-radius:8px;padding:10px 14px;font-size:13px">
+      <div style="color:#F5F5F5;font-weight:600">/login</div>
+      <div style="color:#8A8A8A;font-size:11px;margin-top:3px">email + password<br>POST /admin/auth/login</div>
+    </div>
+    <span style="color:#2E2E2E;font-size:20px">→</span>
+    <div style="background:#181818;border:1px solid #2E2E2E;border-radius:8px;padding:10px 14px;font-size:13px">
+      <div style="color:#F5F5F5;font-weight:600">/2fa</div>
+      <div style="color:#8A8A8A;font-size:11px;margin-top:3px">TOTP 6-digit code<br>POST /admin/auth/verify-2fa</div>
+    </div>
+    <span style="color:#2E2E2E;font-size:20px">→</span>
+    <div style="background:#00D46A22;border:1px solid #00D46A44;border-radius:8px;padding:10px 14px;font-size:13px">
+      <div style="color:#00D46A;font-weight:600">httpOnly cookie</div>
+      <div style="color:#8A8A8A;font-size:11px;margin-top:3px">Admin JWT (separate secret)<br>Redirect → /dashboard</div>
+    </div>
+  </div>
+</div>
+
+<!-- Protected pages -->
+<div style="color:#FF6B00;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Protected Pages — Sidebar Layout</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px">
+
+  <div style="background:#181818;border:1px solid #2E2E2E;border-radius:10px;padding:12px">
+    <div style="font-size:12px;color:#FF6B00;font-weight:600;margin-bottom:6px">/dashboard</div>
+    <div style="font-size:11px;color:#8A8A8A;line-height:1.6">
+      KPI cards: MAU · DAU<br>
+      Subscriptions by tier (Free/Pro/Elite)<br>
+      FP earn/redeem volume (7-day)<br>
+      Top 5 active markets by volume<br>
+      Recent admin activity log
+    </div>
+  </div>
+
+  <div style="background:#181818;border:1px solid #2E2E2E;border-radius:10px;padding:12px">
+    <div style="font-size:12px;color:#FF6B00;font-weight:600;margin-bottom:6px">/markets</div>
+    <div style="font-size:11px;color:#8A8A8A;line-height:1.6">
+      Paginated table: title, category, status, close time<br>
+      Filter by status · category<br>
+      Actions: edit · close · resolve
+    </div>
+    <div style="margin-top:8px;font-size:11px;color:#F5F5F5">/markets/new — create form</div>
+    <div style="font-size:11px;color:#F5F5F5">/markets/[id] — detail + resolve</div>
+    <div style="font-size:10px;color:#8A8A8A;margin-top:4px">Resolve requires outcome (Yes/No) + supervisor approval confirmation</div>
+  </div>
+
+  <div style="background:#181818;border:1px solid #2E2E2E;border-radius:10px;padding:12px">
+    <div style="font-size:12px;color:#FF6B00;font-weight:600;margin-bottom:6px">/users</div>
+    <div style="font-size:11px;color:#8A8A8A;line-height:1.6">
+      Search by email or user ID<br>
+      Filter by tier · status (active/suspended)<br>
+      Paginated results table
+    </div>
+    <div style="margin-top:8px;font-size:11px;color:#F5F5F5">/users/[id] — detail view</div>
+    <div style="font-size:10px;color:#8A8A8A;margin-top:4px">Subscription · FP balance · forecast history · badges · suspend / reinstate</div>
+  </div>
+
+  <div style="background:#181818;border:1px solid #2E2E2E;border-radius:10px;padding:12px">
+    <div style="font-size:12px;color:#FF6B00;font-weight:600;margin-bottom:6px">/fp-adjustments</div>
+    <div style="font-size:11px;color:#8A8A8A;line-height:1.6">
+      User search (typeahead)<br>
+      Amount (+ credit / − debit)<br>
+      Pool type selector<br>
+      Mandatory reason field<br>
+      Supervisor approval checkbox<br>
+      <span style="color:#FF3B30">Audit logged — immutable</span>
+    </div>
+  </div>
+
+  <div style="background:#181818;border:1px solid #2E2E2E;border-radius:10px;padding:12px">
+    <div style="font-size:12px;color:#FF6B00;font-weight:600;margin-bottom:6px">/reviews</div>
+    <div style="font-size:11px;color:#8A8A8A;line-height:1.6">
+      Moderation queue (flagged reviews)<br>
+      Dispute resolution panel<br>
+      Brand response management<br>
+      Approve · Reject · Escalate actions<br>
+      48h SLA indicator per dispute
+    </div>
+  </div>
+
+  <div style="background:#181818;border:1px solid #2E2E2E;border-radius:10px;padding:12px">
+    <div style="font-size:12px;color:#FF6B00;font-weight:600;margin-bottom:6px">/analytics</div>
+    <div style="font-size:11px;color:#8A8A8A;line-height:1.6">
+      MAU/DAU trend chart (30-day)<br>
+      Subscription counts by tier<br>
+      FP earn/redeem bar chart<br>
+      Top markets by forecast volume<br>
+      Review submission rate
+    </div>
+  </div>
+
+</div>
+
+<!-- Sidebar nav -->
+<div style="background:#181818;border:1px solid #2E2E2E;border-radius:10px;padding:14px;margin-bottom:16px">
+  <div style="font-size:10px;color:#8A8A8A;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Sidebar nav items</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px">
+    <span style="background:#242424;padding:4px 10px;border-radius:6px;color:#F5F5F5">📊 Dashboard</span>
+    <span style="background:#242424;padding:4px 10px;border-radius:6px;color:#F5F5F5">📈 Markets</span>
+    <span style="background:#242424;padding:4px 10px;border-radius:6px;color:#F5F5F5">👤 Users</span>
+    <span style="background:#242424;padding:4px 10px;border-radius:6px;color:#F5F5F5">⚡ FP Adjustments</span>
+    <span style="background:#242424;padding:4px 10px;border-radius:6px;color:#F5F5F5">🔍 Reviews</span>
+    <span style="background:#242424;padding:4px 10px;border-radius:6px;color:#F5F5F5">📉 Analytics</span>
+    <span style="background:#242424;padding:4px 10px;border-radius:6px;color:#8A8A8A">⚙ Settings (admin profile, 2FA reset)</span>
+  </div>
+</div>
+
+<div style="padding:14px;background:#0D0D0D;border:1px solid #2E2E2E;border-radius:8px;font-size:13px;color:#8A8A8A">
+  All admin mutations (resolve market, suspend user, FP adjust) require the supervisor approval confirmation modal before firing the API call. Does this admin panel design look right?
+</div>

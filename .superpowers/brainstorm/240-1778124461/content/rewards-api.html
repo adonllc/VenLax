@@ -1,0 +1,43 @@
+<h2>Rewards marketplace: Tango/Rybbon API strategy</h2>
+<p class="subtitle">Gift card fulfillment requires a commercial API partnership. How should we handle it in Phase 3?</p>
+
+<div class="options">
+  <div class="option" data-choice="stub" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Build full UI + backend stub</h3>
+      <p>Implement the complete catalog browse, redemption flow, and wallet UI. The actual Tango/Rybbon API call is behind an interface — stub returns a success response. Real keys can be swapped in when the partnership is signed.</p>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <span style="background:#00D46A22;color:#00D46A;padding:3px 8px;border-radius:4px;font-size:11px">Full UI done now</span>
+        <span style="background:#00D46A22;color:#00D46A;padding:3px 8px;border-radius:4px;font-size:11px">No commercial dependency</span>
+        <span style="background:#FFE60022;color:#FFE600;padding:3px 8px;border-radius:4px;font-size:11px">Stub needs replacing</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="real" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Wire to real Tango API (keys available)</h3>
+      <p>Implement full live integration — catalog sync, redemption, digital code delivery. Assumes Tango sandbox API keys are available now for testing.</p>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <span style="background:#00D46A22;color:#00D46A;padding:3px 8px;border-radius:4px;font-size:11px">Production-ready</span>
+        <span style="background:#FF6B0022;color:#FF6B00;padding:3px 8px;border-radius:4px;font-size:11px">Needs API keys</span>
+        <span style="background:#FF6B0022;color:#FF6B00;padding:3px 8px;border-radius:4px;font-size:11px">Commercial agreement required</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="skip" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Skip rewards for now — UI placeholder only</h3>
+      <p>Build the Rewards tab with a "Coming Soon" state and the Reward Wallet FP balance display, but no catalog or redemption. Add real marketplace in Phase 4 when the partnership is ready.</p>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <span style="background:#00D46A22;color:#00D46A;padding:3px 8px;border-radius:4px;font-size:11px">Zero risk</span>
+        <span style="background:#FFE60022;color:#FFE600;padding:3px 8px;border-radius:4px;font-size:11px">Placeholder only</span>
+        <span style="background:#FF6B0022;color:#FF6B00;padding:3px 8px;border-radius:4px;font-size:11px">Key FP loop incomplete</span>
+      </div>
+    </div>
+  </div>
+</div>

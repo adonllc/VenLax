@@ -1,0 +1,51 @@
+<h2>Data fetching strategy — web + mobile</h2>
+<p class="subtitle">Both apps need to talk to the Fastify API. How should they manage server state?</p>
+
+<div class="options">
+  <div class="option" data-choice="rq" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>TanStack Query (React Query v5)</h3>
+      <p>One library on both web and mobile. <code style="background:#242424;padding:2px 6px;border-radius:4px;font-size:12px">useQuery</code> / <code style="background:#242424;padding:2px 6px;border-radius:4px;font-size:12px">useMutation</code> hooks. Automatic background refetch, cache invalidation, optimistic updates for forecast entry. Same pattern works in Next.js client components and React Native.</p>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <span style="background:#00D46A22;color:#00D46A;padding:3px 8px;border-radius:4px;font-size:11px">Shared pattern</span>
+        <span style="background:#00D46A22;color:#00D46A;padding:3px 8px;border-radius:4px;font-size:11px">Cache + optimistic UI</span>
+        <span style="background:#00D46A22;color:#00D46A;padding:3px 8px;border-radius:4px;font-size:11px">Works on web + RN</span>
+        <span style="background:#FFE60022;color:#FFE600;padding:3px 8px;border-radius:4px;font-size:11px">New dep to add</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="server" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Next.js Server Components + Server Actions (web only)</h3>
+      <p>Web uses RSC for market pages (SSR, no client JS needed). Interactive mutations go through Server Actions. Mobile still uses plain fetch hooks. Two different patterns — web is server-first, mobile is client-side.</p>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <span style="background:#00D46A22;color:#00D46A;padding:3px 8px;border-radius:4px;font-size:11px">Best web performance</span>
+        <span style="background:#00D46A22;color:#00D46A;padding:3px 8px;border-radius:4px;font-size:11px">No extra dep on web</span>
+        <span style="background:#FF6B0022;color:#FF6B00;padding:3px 8px;border-radius:4px;font-size:11px">Two different patterns</span>
+        <span style="background:#FF6B0022;color:#FF6B00;padding:3px 8px;border-radius:4px;font-size:11px">Server Actions ≠ RN</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="hybrid" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Hybrid — RSC for public pages, React Query for interactive UI</h3>
+      <p>Market browse/detail pages use RSC for SSR + SEO. Once a user interacts (forecast entry, reviews, wallet), React Query takes over for live updates and cache. Mobile uses React Query throughout. Best of both.</p>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <span style="background:#00D46A22;color:#00D46A;padding:3px 8px;border-radius:4px;font-size:11px">SSR where it matters</span>
+        <span style="background:#00D46A22;color:#00D46A;padding:3px 8px;border-radius:4px;font-size:11px">RQ for real-time UI</span>
+        <span style="background:#00D46A22;color:#00D46A;padding:3px 8px;border-radius:4px;font-size:11px">Shared RQ on mobile</span>
+        <span style="background:#FFE60022;color:#FFE600;padding:3px 8px;border-radius:4px;font-size:11px">Two patterns to learn</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:24px;padding:16px;background:#181818;border-radius:12px;border:1px solid #2E2E2E">
+  <p class="label">Recommendation</p>
+  <p style="margin-top:6px;font-size:13px;color:#F5F5F5"><strong style="color:#00D46A">C (Hybrid)</strong> — RSC handles market detail pages for SEO and OG cards (no JS needed for the share preview). React Query handles all authenticated, interactive surfaces (forecast entry, wallet, reviews) and is shared with mobile.</p>
+</div>

@@ -1,0 +1,93 @@
+<h2>Design — Section 4: Web App (apps/web)</h2>
+<p class="subtitle">Next.js 15 App Router · RSC for public/SEO · React Query for authenticated interactive surfaces</p>
+
+<!-- Route groups -->
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px">
+
+  <div style="background:#181818;border:1px solid #2E2E2E;border-radius:10px;padding:14px">
+    <div style="color:#8A8A8A;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Public Routes — RSC (SSR/SSG)</div>
+    <div style="display:flex;flex-direction:column;gap:8px;font-size:12px">
+      <div>
+        <div style="color:#F5F5F5;font-weight:600">/</div>
+        <div style="color:#8A8A8A;font-size:11px">Landing page → redirects to /home if authed</div>
+      </div>
+      <div>
+        <div style="color:#F5F5F5;font-weight:600">/markets</div>
+        <div style="color:#8A8A8A;font-size:11px">SSG market browser, category tabs, search</div>
+      </div>
+      <div>
+        <div style="color:#F5F5F5;font-weight:600">/markets/[id]</div>
+        <div style="color:#8A8A8A;font-size:11px">SSR · OG meta · ProbabilityBar<br>ForecastEntryWidget = client component island</div>
+      </div>
+      <div>
+        <div style="color:#F5F5F5;font-weight:600">/reviews/[productId]</div>
+        <div style="color:#8A8A8A;font-size:11px">SSR product review page (SEO indexed)</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:#181818;border:1px solid #FFE60033;border-radius:10px;padding:14px">
+    <div style="color:#FFE600;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Auth Routes (unauthenticated only)</div>
+    <div style="display:flex;flex-direction:column;gap:8px;font-size:12px">
+      <div>
+        <div style="color:#F5F5F5;font-weight:600">/auth/login</div>
+        <div style="color:#8A8A8A;font-size:11px">Email/password · redirects to /home on success</div>
+      </div>
+      <div>
+        <div style="color:#F5F5F5;font-weight:600">/auth/register</div>
+        <div style="color:#8A8A8A;font-size:11px">Name · email · password · 18+ age gate</div>
+      </div>
+    </div>
+
+    <div style="color:#00D46A;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-top:16px;margin-bottom:10px">Shared Layout (all authed pages)</div>
+    <div style="font-size:11px;color:#8A8A8A;line-height:1.6">
+      TopBar: logo · search · ⚡ FP balance · notification bell · avatar<br>
+      ThemeProvider (dark/light toggle)<br>
+      QueryClientProvider wraps all client components<br>
+      AuthGuard redirects → /auth/login if token missing
+    </div>
+  </div>
+
+  <div style="background:#181818;border:1px solid #00D46A33;border-radius:10px;padding:14px">
+    <div style="color:#00D46A;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Authenticated App Routes — React Query</div>
+    <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
+      <div><span style="color:#F5F5F5;font-weight:600">/home</span> <span style="color:#8A8A8A">Activity feed, missions, streak banner, AI signals</span></div>
+      <div><span style="color:#F5F5F5;font-weight:600">/forecast</span> <span style="color:#8A8A8A">Open positions, forecast history</span></div>
+      <div><span style="color:#F5F5F5;font-weight:600">/reviews</span> <span style="color:#8A8A8A">Browse + submit reviews</span></div>
+      <div><span style="color:#F5F5F5;font-weight:600">/rewards</span> <span style="color:#8A8A8A">Wallet summary + reward catalog</span></div>
+      <div><span style="color:#F5F5F5;font-weight:600">/rewards/redeem/[id]</span> <span style="color:#8A8A8A">Redemption confirmation + KYC gate</span></div>
+      <div><span style="color:#F5F5F5;font-weight:600">/leaderboard</span> <span style="color:#8A8A8A">Accuracy leaderboard, filter by category</span></div>
+      <div><span style="color:#F5F5F5;font-weight:600">/profile</span> <span style="color:#8A8A8A">Own profile: badges, XP, history</span></div>
+      <div><span style="color:#F5F5F5;font-weight:600">/profile/[userId]</span> <span style="color:#8A8A8A">Public profile + follow button</span></div>
+      <div><span style="color:#F5F5F5;font-weight:600">/settings</span> <span style="color:#8A8A8A">Account, theme, notifications</span></div>
+      <div><span style="color:#F5F5F5;font-weight:600">/settings/subscription</span> <span style="color:#8A8A8A">Tier upgrade via Stripe Checkout</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Key UX callouts -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+  <div style="background:#181818;border:1px solid #2E2E2E;border-radius:10px;padding:12px">
+    <div style="font-size:10px;color:#8A8A8A;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Market Detail Page — RSC + Client Island</div>
+    <div style="font-size:11px;color:#8A8A8A;line-height:1.6">
+      Server: title, description, resolution criteria, current probability (initial snapshot), OG meta tags<br><br>
+      <span style="color:#00D46A">Client island:</span> ForecastEntryWidget subscribes to WebSocket — live probability updates, YES/NO buttons, FP slider, React Query mutation for forecast entry<br><br>
+      InsightCard (Pro+ only) — React Query fetch, disclaimer modal on first view
+    </div>
+  </div>
+  <div style="background:#181818;border:1px solid #2E2E2E;border-radius:10px;padding:12px">
+    <div style="font-size:10px;color:#8A8A8A;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Web-Specific Features (from spec)</div>
+    <div style="font-size:11px;color:#8A8A8A;line-height:1.6">
+      Keyboard shortcuts: <code style="background:#242424;padding:1px 4px;border-radius:3px">Y</code> / <code style="background:#242424;padding:1px 4px;border-radius:3px">N</code> for Yes/No · <code style="background:#242424;padding:1px 4px;border-radius:3px">Enter</code> to confirm<br>
+      OG image generation per market (probability + close time)<br>
+      Web Push API opt-in for settlement alerts<br>
+      Forecast history CSV export<br>
+      Multi-chart market view on wide screens
+    </div>
+  </div>
+</div>
+
+<div style="padding:14px;background:#0D0D0D;border:1px solid #2E2E2E;border-radius:8px;font-size:13px;color:#8A8A8A">
+  Does the web routing structure look right? Any screens to add or remove?
+</div>

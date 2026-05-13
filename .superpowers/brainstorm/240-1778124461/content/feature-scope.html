@@ -1,0 +1,66 @@
+<h2>What feature scope are we targeting for Phase 3?</h2>
+<p class="subtitle">The design spec has a lot of surface area. Pick the tier that matches your launch timeline.</p>
+
+<div class="options">
+  <div class="option" data-choice="core" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Core Product — enough to use the product end-to-end</h3>
+      <div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-size:13px">
+        <span style="color:#00D46A">✓ Auth (register, login, JWT)</span>
+        <span style="color:#00D46A">✓ Market browser + filters</span>
+        <span style="color:#00D46A">✓ Forecast entry / withdraw</span>
+        <span style="color:#00D46A">✓ Live probability (WebSocket)</span>
+        <span style="color:#00D46A">✓ Review submit + browse</span>
+        <span style="color:#00D46A">✓ FP balance display</span>
+        <span style="color:#00D46A">✓ Daily login claim</span>
+        <span style="color:#00D46A">✓ Push notification setup</span>
+        <span style="color:#8A8A8A">✗ Rewards marketplace</span>
+        <span style="color:#8A8A8A">✗ Badges / XP / Missions</span>
+        <span style="color:#8A8A8A">✗ AI Insight Signals UI</span>
+        <span style="color:#8A8A8A">✗ Social / Leaderboard</span>
+      </div>
+      <p style="margin-top:10px;font-size:12px;color:#8A8A8A">Fastest path to something shippable. Rewards + gamification added in Phase 4.</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="core-plus" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Core + Engagement — full FP economy visible to users</h3>
+      <div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-size:13px">
+        <span style="color:#00D46A">✓ Everything in A</span>
+        <span style="color:#00D46A">✓ AI Insight Signals UI (Pro+)</span>
+        <span style="color:#00D46A">✓ Streak multiplier UI</span>
+        <span style="color:#00D46A">✓ FP earn history</span>
+        <span style="color:#00D46A">✓ Leaderboard (accuracy)</span>
+        <span style="color:#00D46A">✓ Subscription upgrade flow</span>
+        <span style="color:#00D46A">✓ Public profiles</span>
+        <span style="color:#8A8A8A">✗ Rewards marketplace</span>
+        <span style="color:#8A8A8A">✗ Badges / XP / Missions</span>
+        <span style="color:#8A8A8A">✗ Social sharing cards</span>
+      </div>
+      <p style="margin-top:10px;font-size:12px;color:#8A8A8A">Good balance — users see FP accumulating but redemption comes later.</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="full" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Full Phase 3 — everything in the design spec</h3>
+      <div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;font-size:13px">
+        <span style="color:#00D46A">✓ Everything in A + B</span>
+        <span style="color:#00D46A">✓ Rewards marketplace (catalog)</span>
+        <span style="color:#00D46A">✓ Redemption flow (Tango API)</span>
+        <span style="color:#00D46A">✓ Badge system (7 badges)</span>
+        <span style="color:#00D46A">✓ XP level display</span>
+        <span style="color:#00D46A">✓ Daily missions (3 rotating)</span>
+        <span style="color:#00D46A">✓ Social share cards (OG)</span>
+        <span style="color:#00D46A">✓ Follow / unfollow users</span>
+        <span style="color:#00D46A">✓ B2B brand account pages</span>
+        <span style="color:#00D46A">✓ KYC gate at $600 redemption</span>
+      </div>
+      <p style="margin-top:10px;font-size:12px;color:#8A8A8A">Full launch-ready product. Larger spec + plan, but nothing left for Phase 4.</p>
+    </div>
+  </div>
+</div>

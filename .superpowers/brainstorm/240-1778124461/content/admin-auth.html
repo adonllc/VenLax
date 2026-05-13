@@ -1,0 +1,35 @@
+<h2>Admin panel authentication strategy</h2>
+<p class="subtitle">The design spec requires 2FA for all admin actions. How should admin identity work?</p>
+
+<div class="options">
+  <div class="option" data-choice="role-flag" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Role flag on existing user table</h3>
+      <p>Add <code style="background:#242424;padding:2px 6px;border-radius:4px;font-size:12px">role: "user" | "admin" | "superadmin"</code> to the users table. Admin users log in via the same auth endpoints. Admin panel checks JWT role claim; redirects non-admins. 2FA enforced as a second step after login.</p>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <span style="background:#00D46A22;color:#00D46A;padding:3px 8px;border-radius:4px;font-size:11px">Simplest — reuses auth module</span>
+        <span style="background:#FFE60022;color:#FFE600;padding:3px 8px;border-radius:4px;font-size:11px">Role promoted via DB directly</span>
+        <span style="background:#FF6B0022;color:#FF6B00;padding:3px 8px;border-radius:4px;font-size:11px">Admin on same user surface</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="separate" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Separate admin credentials table</h3>
+      <p>A standalone <code style="background:#242424;padding:2px 6px;border-radius:4px;font-size:12px">admin_users</code> table with email + bcrypt password, separate JWT signing secret, and its own login endpoint <code style="background:#242424;padding:2px 6px;border-radius:4px;font-size:12px">POST /admin/auth/login</code>. Admins can't hold user accounts on the same credentials. TOTP 2FA enforced at login.</p>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <span style="background:#00D46A22;color:#00D46A;padding:3px 8px;border-radius:4px;font-size:11px">Fully isolated</span>
+        <span style="background:#00D46A22;color:#00D46A;padding:3px 8px;border-radius:4px;font-size:11px">Separate JWT secret</span>
+        <span style="background:#FFE60022;color:#FFE600;padding:3px 8px;border-radius:4px;font-size:11px">More schema + routes</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:24px;padding:16px;background:#181818;border-radius:12px;border:1px solid #2E2E2E">
+  <p class="label">Recommendation</p>
+  <p style="margin-top:6px;font-size:13px;color:#F5F5F5"><strong style="color:#00D46A">B (separate table)</strong> — keeps admin identity completely isolated from the product user surface. A compromised user session can never escalate to admin. The extra schema is minimal and the security boundary is worth it given FP adjustment and market resolution powers.</p>
+</div>

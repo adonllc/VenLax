@@ -5,36 +5,36 @@ RUN npm install -g pnpm@9
 FROM base AS deps
 WORKDIR /app
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
-COPY apps/api/package.json ./apps/api/
+COPY apps/admin/package.json ./apps/admin/
+COPY packages/ui/package.json ./packages/ui/
 COPY packages/shared/package.json ./packages/shared/
-RUN pnpm install --frozen-lockfile --filter api...
+RUN pnpm install --frozen-lockfile --filter admin...
 
 # ── Stage 2: build ────────────────────────────────────────────────────────────
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/apps/api/node_modules ./apps/api/node_modules
-COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY --from=deps /app/apps/admin/node_modules ./apps/admin/node_modules
+COPY package.json pnpm-workspace.yaml ./
 COPY packages/shared ./packages/shared
-COPY apps/api ./apps/api
-# Build shared first so its dist/ is available for the API at runtime
+COPY packages/ui ./packages/ui
+COPY apps/admin ./apps/admin
 RUN pnpm --filter @venlaxiq/shared build
-# Build API
-RUN pnpm --filter api build
-# Resolve workspace symlinks into a standalone production bundle
-RUN pnpm deploy --filter api --prod /deploy
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN pnpm --filter admin build
 
 # ── Stage 3: minimal production image ─────────────────────────────────────────
 FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3002
 RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
-# pnpm deploy output: real files, no symlinks, workspace deps included
-COPY --from=builder --chown=nodejs:nodejs /deploy/node_modules ./node_modules
-COPY --from=builder --chown=nodejs:nodejs /deploy/dist ./dist
-COPY --from=builder --chown=nodejs:nodejs /deploy/package.json ./package.json
+COPY --from=builder --chown=nodejs:nodejs /app/apps/admin/.next/standalone ./
+COPY --from=builder --chown=nodejs:nodejs /app/apps/admin/.next/static ./apps/admin/.next/static
+COPY --from=builder --chown=nodejs:nodejs /app/apps/admin/public ./apps/admin/public 2>/dev/null || true
 USER nodejs
-EXPOSE 3001
+EXPOSE 3002
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-  CMD wget -qO- http://localhost:3001/health || exit 1
-CMD ["node", "dist/index.js"]
+  CMD wget -qO- http://localhost:3002/ || exit 1
+CMD ["node", "apps/admin/server.js"]
