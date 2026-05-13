@@ -39,6 +39,8 @@ COPY --from=builder --chown=nodejs:nodejs /app/apps/admin/.next/standalone ./
 COPY --from=builder --chown=nodejs:nodejs /app/apps/admin/.next/static ./apps/admin/.next/static
 USER nodejs
 EXPOSE 3002
+ENV PORT=3002
+ENV HOSTNAME=0.0.0.0
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
   CMD wget -qO- http://localhost:3002/ || exit 1
 CMD ["node", "apps/admin/server.js"]
