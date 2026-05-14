@@ -16,7 +16,7 @@ export async function marketRoutes(app: FastifyInstance) {
     if (status && !validStatuses.includes(status)) {
       return reply.code(400).send({ error: `Invalid status. Must be one of: ${validStatuses.join(", ")}` });
     }
-    return reply.send(await listMarkets(status));
+    return reply.send({ markets: await listMarkets(status) });
   });
 
   app.get("/markets/:id", async (request, reply) => {
