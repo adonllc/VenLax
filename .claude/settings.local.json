@@ -45,7 +45,19 @@
       "Bash(echo \"Exit code: $?\")",
       "Bash(DATABASE_URL=\"postgresql://postgres:bhumvAaqWXGnNlVOlJFZczmWBuMkcLql@postgres.railway.internal:5432/railway\" pnpm db:migrate)",
       "Bash(DATABASE_URL=\"postgresql://postgres:bhumvAaqWXGnNlVOlJFZczmWBuMkcLql@viaduct.proxy.rlwy.net:44629/railway\" pnpm db:migrate)",
-      "Bash(node -e \"console.log\\(require\\('crypto'\\).randomBytes\\(64\\).toString\\('hex'\\)\\)\")"
+      "Bash(node -e \"console.log\\(require\\('crypto'\\).randomBytes\\(64\\).toString\\('hex'\\)\\)\")",
+      "Bash(node -e ' *)",
+      "Bash(node -e \"const d=require\\('fs'\\).readFileSync\\('/dev/stdin','utf8'\\);const p=JSON.parse\\(d\\);console.log\\('cookie peer:',p.peerDependencies\\)\")",
+      "Bash(node -e \"const d=require\\('fs'\\).readFileSync\\('/dev/stdin','utf8'\\);const p=JSON.parse\\(d\\);console.log\\('websocket peer:',p.peerDependencies\\)\")",
+      "Bash(node -e \"const p=require\\('c:/Users/hemkp/venlaxiq/node_modules/.pnpm/@fastify+cookie@11.0.2/node_modules/@fastify/cookie/package.json'\\);console.log\\('cookie peer:',JSON.stringify\\(p.peerDependencies\\)\\)\")",
+      "Bash(node -e \"const p=require\\('c:/Users/hemkp/venlaxiq/node_modules/.pnpm/@fastify+websocket@10.0.1/node_modules/@fastify/websocket/package.json'\\);console.log\\('websocket peer:',JSON.stringify\\(p.peerDependencies\\)\\)\")",
+      "Bash(node -e \"const p=require\\('c:/Users/hemkp/venlaxiq/node_modules/.pnpm/@fastify+cookie@11.0.2/node_modules/@fastify/cookie/package.json'\\);console.log\\(JSON.stringify\\({version:p.version,engines:p.engines,peerDeps:p.peerDependencies,keywords:p.keywords?.slice\\(0,3\\)}\\)\\)\")",
+      "Bash(Select-Object Name)",
+      "Bash(mkdir -p \"c:\\\\Users\\\\hemkp\\\\venlaxiq\\\\docs\")",
+      "WebSearch"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\hemkp\\venlaxiq\\docs"
     ]
   }
 }

@@ -5,7 +5,7 @@ import Link from "next/link";
 export default async function ProtectedLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
   const token = cookieStore.get("auth_token")?.value;
-  if (!token) redirect("/auth/login");
+  if (!token) redirect("/login");
 
   return (
     <div className="min-h-screen bg-surface">

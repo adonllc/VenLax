@@ -16,7 +16,7 @@ export default async function LandingPage() {
       </p>
       <div className="flex gap-4">
         <Link
-          href="/auth/register"
+          href="/register"
           className="px-6 py-3 bg-green hover:bg-green-dark text-white font-semibold rounded-lg transition-colors"
         >
           Get started

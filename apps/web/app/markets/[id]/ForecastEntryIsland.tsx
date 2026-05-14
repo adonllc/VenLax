@@ -87,7 +87,7 @@ export function ForecastEntryIsland({ marketId, initialProb, isAuthed }: Props) 
       fpBalance={fpBalance}
       maxFp={maxFp}
       isLoggedIn={isAuthed}
-      onLoginPrompt={() => router.push("/auth/login")}
+      onLoginPrompt={() => router.push("/login")}
       onSubmit={async (side, fpAmount) => {
         await mutation.mutateAsync({ side, fpAmount });
       }}

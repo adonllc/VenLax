@@ -62,7 +62,7 @@ export default function LoginPage() {
           </button>
         </form>
         <p className="text-center text-sm text-text-secondary mt-4">
-          No account? <Link href="/auth/register" className="text-green hover:underline">Create one</Link>
+          No account? <Link href="/register" className="text-green hover:underline">Create one</Link>
         </p>
       </div>
     </div>
