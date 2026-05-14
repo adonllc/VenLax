@@ -36,6 +36,7 @@ RUN apk add --no-cache wget && addgroup -g 1001 -S nodejs && adduser -S nodejs -
 COPY --from=builder --chown=nodejs:nodejs /deploy/node_modules ./node_modules
 COPY --from=builder --chown=nodejs:nodejs /deploy/dist ./dist
 COPY --from=builder --chown=nodejs:nodejs /deploy/package.json ./package.json
+COPY --from=builder --chown=nodejs:nodejs /app/apps/api/src/db/migrations ./migrations
 USER nodejs
 EXPOSE 3001
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
