@@ -41,7 +41,7 @@ export async function registerUser(
     sub: user.id,
     email: user.email,
     tier: user.subscriptionTier,
-  }, { expiresIn: "15m" });
+  }, { expiresIn: "7d" });
 
   return { token, user: { id: user.id, email: user.email, tier: user.subscriptionTier } };
 }
@@ -62,7 +62,7 @@ export async function loginUser(
     sub: user.id,
     email: user.email,
     tier: user.subscriptionTier,
-  }, { expiresIn: "15m" });
+  }, { expiresIn: "7d" });
 
   return { token };
 }
