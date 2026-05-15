@@ -56,7 +56,7 @@ body::before {
   z-index: 0;
 }
 
-#__next, main {
+body > div, body > main {
   position: relative;
   z-index: 1;
 }
