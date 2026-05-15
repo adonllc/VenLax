@@ -32,37 +32,158 @@ export default function LoginPage() {
     }
   }
 
-  const fieldClass = "w-full bg-surface-3 border border-border rounded-lg px-3 py-2.5 text-sm text-text-primary outline-none focus:border-green transition-colors";
-  const labelClass = "text-xs text-text-secondary font-semibold uppercase tracking-wider block mb-1.5";
-
   return (
-    <div className="w-full max-w-sm">
+    <div>
+      {/* Logo */}
       <div className="text-center mb-8">
-        <h1 className="font-heading font-bold text-3xl text-text-primary">VenlaxIQ</h1>
-        <p className="text-text-secondary text-sm mt-1">Predict. Review. Earn.</p>
+        <div className="inline-flex items-center gap-2 mb-2">
+          <span
+            style={{
+              fontFamily: "var(--font-heading, 'Outfit', sans-serif)",
+              fontWeight: 800,
+              fontSize: "2rem",
+              color: "var(--color-text-primary)",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            Venlax
+          </span>
+          <span
+            style={{
+              fontFamily: "var(--font-heading, 'Outfit', sans-serif)",
+              fontWeight: 800,
+              fontSize: "2rem",
+              color: "var(--color-green)",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            IQ
+          </span>
+        </div>
+        <p style={{ color: "var(--color-text-secondary)", fontSize: "0.875rem" }}>
+          Predict. Review. Earn.
+        </p>
       </div>
-      <div className="bg-surface-2 border border-border rounded-xl p-6">
-        <h2 className="font-heading font-bold text-lg text-text-primary mb-5">Sign in</h2>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+
+      {/* Card */}
+      <div
+        className="glass rounded-2xl p-7"
+        style={{ boxShadow: "0 8px 40px rgba(0,0,0,0.5)" }}
+      >
+        <h2
+          style={{
+            fontFamily: "var(--font-heading, 'Outfit', sans-serif)",
+            fontWeight: 700,
+            fontSize: "1.25rem",
+            color: "var(--color-text-primary)",
+            marginBottom: "1.5rem",
+          }}
+        >
+          Sign in
+        </h2>
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div>
-            <label className={labelClass}>Email</label>
-            <input type="email" className={fieldClass} value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <label
+              style={{
+                display: "block",
+                fontSize: "0.7rem",
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+                color: "var(--color-text-secondary)",
+                marginBottom: "0.5rem",
+              }}
+            >
+              Email
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              style={{
+                width: "100%",
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                borderRadius: "10px",
+                padding: "0.75rem 1rem",
+                fontSize: "0.875rem",
+                color: "var(--color-text-primary)",
+                outline: "none",
+                transition: "border-color 0.2s",
+              }}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "var(--color-green)")}
+              onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)")}
+            />
           </div>
+
           <div>
-            <label className={labelClass}>Password</label>
-            <input type="password" className={fieldClass} value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <label
+              style={{
+                display: "block",
+                fontSize: "0.7rem",
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+                color: "var(--color-text-secondary)",
+                marginBottom: "0.5rem",
+              }}
+            >
+              Password
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              style={{
+                width: "100%",
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                borderRadius: "10px",
+                padding: "0.75rem 1rem",
+                fontSize: "0.875rem",
+                color: "var(--color-text-primary)",
+                outline: "none",
+                transition: "border-color 0.2s",
+              }}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "var(--color-green)")}
+              onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)")}
+            />
           </div>
-          {error && <p className="text-sm text-red-400">{error}</p>}
+
+          {error && (
+            <p style={{ fontSize: "0.8rem", color: "#FF5C5C", margin: 0 }}>{error}</p>
+          )}
+
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-green hover:bg-green-dark text-white font-semibold rounded-lg py-2.5 text-sm transition-colors disabled:opacity-50"
+            style={{
+              width: "100%",
+              background: loading ? "rgba(196,255,0,0.5)" : "var(--color-green)",
+              color: "#080B0F",
+              fontWeight: 700,
+              fontSize: "0.875rem",
+              border: "none",
+              borderRadius: "10px",
+              padding: "0.85rem",
+              cursor: loading ? "not-allowed" : "pointer",
+              transition: "all 0.2s",
+              boxShadow: loading ? "none" : "var(--glow-green-sm)",
+              letterSpacing: "0.01em",
+            }}
           >
             {loading ? "Signing in…" : "Sign in"}
           </button>
         </form>
-        <p className="text-center text-sm text-text-secondary mt-4">
-          No account? <Link href="/register" className="text-green hover:underline">Create one</Link>
+
+        <p style={{ textAlign: "center", fontSize: "0.8rem", color: "var(--color-text-secondary)", marginTop: "1.25rem" }}>
+          No account?{" "}
+          <Link href="/register" style={{ color: "var(--color-green)", textDecoration: "none", fontWeight: 600 }}>
+            Create one
+          </Link>
         </p>
       </div>
     </div>

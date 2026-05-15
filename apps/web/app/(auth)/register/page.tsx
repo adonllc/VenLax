@@ -4,15 +4,61 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(255,255,255,0.1)",
+  borderRadius: "10px",
+  padding: "0.75rem 1rem",
+  fontSize: "0.875rem",
+  color: "var(--color-text-primary)",
+  outline: "none",
+  transition: "border-color 0.2s",
+};
+
+const labelStyle: React.CSSProperties = {
+  display: "block",
+  fontSize: "0.7rem",
+  fontWeight: 600,
+  textTransform: "uppercase",
+  letterSpacing: "0.1em",
+  color: "var(--color-text-secondary)",
+  marginBottom: "0.5rem",
+};
+
+function Field({
+  label, type = "text", value, onChange, minLength, maxLength, required,
+}: {
+  label: string; type?: string; value: string;
+  onChange: (v: string) => void; minLength?: number; maxLength?: number; required?: boolean;
+}) {
+  const [focused, setFocused] = useState(false);
+  return (
+    <div>
+      <label style={labelStyle}>{label}</label>
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        required={required}
+        minLength={minLength}
+        maxLength={maxLength}
+        style={{ ...inputStyle, borderColor: focused ? "var(--color-green)" : "rgba(255,255,255,0.1)" }}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+      />
+    </div>
+  );
+}
+
 export default function RegisterPage() {
   const router = useRouter();
   const [form, setForm] = useState({ email: "", username: "", password: "", ageConfirm: false });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  function set(key: string) {
-    return (e: React.ChangeEvent<HTMLInputElement>) =>
-      setForm((f) => ({ ...f, [key]: key === "ageConfirm" ? e.target.checked : e.target.value }));
+  function set(key: keyof typeof form) {
+    return (v: string | boolean) => setForm((f) => ({ ...f, [key]: v }));
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -37,45 +83,73 @@ export default function RegisterPage() {
     }
   }
 
-  const fieldClass = "w-full bg-surface-3 border border-border rounded-lg px-3 py-2.5 text-sm text-text-primary outline-none focus:border-green transition-colors";
-  const labelClass = "text-xs text-text-secondary font-semibold uppercase tracking-wider block mb-1.5";
-
   return (
-    <div className="w-full max-w-sm">
+    <div>
+      {/* Logo */}
       <div className="text-center mb-8">
-        <h1 className="font-heading font-bold text-3xl text-text-primary">VenlaxIQ</h1>
-        <p className="text-text-secondary text-sm mt-1">Predict. Review. Earn.</p>
+        <div className="inline-flex items-center gap-2 mb-2">
+          <span style={{ fontFamily: "var(--font-heading, 'Outfit', sans-serif)", fontWeight: 800, fontSize: "2rem", color: "var(--color-text-primary)", letterSpacing: "-0.02em" }}>
+            Venlax
+          </span>
+          <span style={{ fontFamily: "var(--font-heading, 'Outfit', sans-serif)", fontWeight: 800, fontSize: "2rem", color: "var(--color-green)", letterSpacing: "-0.02em" }}>
+            IQ
+          </span>
+        </div>
+        <p style={{ color: "var(--color-text-secondary)", fontSize: "0.875rem" }}>Predict. Review. Earn.</p>
       </div>
-      <div className="bg-surface-2 border border-border rounded-xl p-6">
-        <h2 className="font-heading font-bold text-lg text-text-primary mb-5">Create account</h2>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div>
-            <label className={labelClass}>Email</label>
-            <input type="email" className={fieldClass} value={form.email} onChange={set("email")} required />
-          </div>
-          <div>
-            <label className={labelClass}>Username</label>
-            <input className={fieldClass} value={form.username} onChange={set("username")} required minLength={3} maxLength={30} />
-          </div>
-          <div>
-            <label className={labelClass}>Password</label>
-            <input type="password" className={fieldClass} value={form.password} onChange={set("password")} required minLength={8} />
-          </div>
-          <label className="flex items-start gap-2 cursor-pointer">
-            <input type="checkbox" checked={form.ageConfirm} onChange={set("ageConfirm")} className="mt-0.5" />
-            <span className="text-xs text-text-secondary">I confirm I am 18 years of age or older</span>
+
+      {/* Card */}
+      <div className="glass rounded-2xl p-7" style={{ boxShadow: "0 8px 40px rgba(0,0,0,0.5)" }}>
+        <h2 style={{ fontFamily: "var(--font-heading, 'Outfit', sans-serif)", fontWeight: 700, fontSize: "1.25rem", color: "var(--color-text-primary)", marginBottom: "1.5rem" }}>
+          Create account
+        </h2>
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          <Field label="Email" type="email" value={form.email} onChange={set("email") as (v: string) => void} required />
+          <Field label="Username" value={form.username} onChange={set("username") as (v: string) => void} required minLength={3} maxLength={30} />
+          <Field label="Password" type="password" value={form.password} onChange={set("password") as (v: string) => void} required minLength={8} />
+
+          <label style={{ display: "flex", alignItems: "flex-start", gap: "0.625rem", cursor: "pointer" }}>
+            <input
+              type="checkbox"
+              checked={form.ageConfirm}
+              onChange={(e) => setForm((f) => ({ ...f, ageConfirm: e.target.checked }))}
+              style={{ marginTop: "2px", accentColor: "var(--color-green)" }}
+            />
+            <span style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", lineHeight: 1.5 }}>
+              I confirm I am 18 years of age or older
+            </span>
           </label>
-          {error && <p className="text-sm text-red-400">{error}</p>}
+
+          {error && <p style={{ fontSize: "0.8rem", color: "#FF5C5C", margin: 0 }}>{error}</p>}
+
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-green hover:bg-green-dark text-white font-semibold rounded-lg py-2.5 text-sm transition-colors disabled:opacity-50"
+            style={{
+              width: "100%",
+              background: loading ? "rgba(196,255,0,0.5)" : "var(--color-green)",
+              color: "#080B0F",
+              fontWeight: 700,
+              fontSize: "0.875rem",
+              border: "none",
+              borderRadius: "10px",
+              padding: "0.85rem",
+              cursor: loading ? "not-allowed" : "pointer",
+              transition: "all 0.2s",
+              boxShadow: loading ? "none" : "var(--glow-green-sm)",
+              letterSpacing: "0.01em",
+            }}
           >
             {loading ? "Creating account…" : "Create account"}
           </button>
         </form>
-        <p className="text-center text-sm text-text-secondary mt-4">
-          Already have an account? <Link href="/login" className="text-green hover:underline">Sign in</Link>
+
+        <p style={{ textAlign: "center", fontSize: "0.8rem", color: "var(--color-text-secondary)", marginTop: "1.25rem" }}>
+          Already have an account?{" "}
+          <Link href="/login" style={{ color: "var(--color-green)", textDecoration: "none", fontWeight: 600 }}>
+            Sign in
+          </Link>
         </p>
       </div>
     </div>
