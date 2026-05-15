@@ -15,6 +15,13 @@
       "when": 1778198743759,
       "tag": "0001_overjoyed_lady_ursula",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1747180800000,
+      "tag": "0002_markets_source",
+      "breakpoints": true
     }
   ]
 }

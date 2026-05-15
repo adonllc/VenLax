@@ -206,6 +206,7 @@ Return JSON only — one of:
       closesAt,
       resolvesAt: closesAt,
       status: "open",
+      source: "ai",
       lmsrLiquidity: 100,
       listingFeePaid: true,
       creatorId: null,

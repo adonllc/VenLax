@@ -108,7 +108,8 @@ export const markets = pgTable("markets", {
   resolvedOutcome: boolean("resolved_outcome"), // null until resolved
   resolvedById: uuid("resolved_by_id").references(() => users.id),
   resolvedAt: timestamp("resolved_at", { withTimezone: true }),
-  creatorId: uuid("creator_id").references(() => users.id), // null for admin-created
+  creatorId: uuid("creator_id").references(() => users.id), // null for admin/ai-created
+  source: varchar("source", { length: 20 }).notNull().default("user"), // "user" | "admin" | "ai"
   listingFeePaid: boolean("listing_fee_paid").notNull().default(false),
   lmsrLiquidity: integer("lmsr_liquidity").notNull().default(100), // LMSR b parameter
   qYes: integer("q_yes").notNull().default(0),

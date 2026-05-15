@@ -61,12 +61,14 @@ export async function listMarkets(opts: {
   page: number;
   status?: string;
   category?: string;
+  source?: string;
 }) {
   const limit = 20;
   const offset = (opts.page - 1) * limit;
   const conditions = [];
   if (opts.status) conditions.push(eq(markets.status, opts.status as any));
   if (opts.category) conditions.push(eq(markets.category, opts.category as any));
+  if (opts.source) conditions.push(eq(markets.source, opts.source));
   const where = conditions.length > 0 ? and(...conditions) : undefined;
   const [rows, [{ total }]] = await Promise.all([
     db

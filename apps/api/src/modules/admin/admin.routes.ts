@@ -13,6 +13,8 @@ import {
   moderateReview,
   getAnalytics,
 } from "./admin.service";
+import { db } from "../../db";
+import { generateAndStoreMarket } from "../ai/insight.service";
 import { z } from "zod";
 
 const createMarketSchema = z.object({
@@ -69,8 +71,8 @@ export async function adminRoutes(app: FastifyInstance) {
   // ── Markets ───────────────────────────────────────────────────────────────
 
   app.get("/admin/markets", { preHandler }, async (request, reply) => {
-    const { page = "1", status, category } = request.query as any;
-    return reply.send(await listMarkets({ page: Number(page), status, category }));
+    const { page = "1", status, category, source } = request.query as any;
+    return reply.send(await listMarkets({ page: Number(page), status, category, source }));
   });
 
   app.get("/admin/markets/:id", { preHandler }, async (request, reply) => {
@@ -133,5 +135,16 @@ export async function adminRoutes(app: FastifyInstance) {
 
   app.get("/admin/analytics", { preHandler }, async (_request, reply) => {
     return reply.send(await getAnalytics());
+  });
+
+  // ── AI Market Generator ───────────────────────────────────────────────────
+
+  app.post("/admin/markets/generate", { preHandler }, async (_request, reply) => {
+    try {
+      await generateAndStoreMarket(db);
+      return reply.send({ ok: true });
+    } catch (err: any) {
+      return reply.code(500).send({ error: err.message });
+    }
   });
 }

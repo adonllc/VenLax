@@ -61,6 +61,7 @@ describe("generateAndStoreMarket", () => {
 
     expect(inserted).toBeDefined();
     expect(inserted?.status).toBe("open");
+    expect(inserted?.source).toBe("ai");
     expect(inserted?.category).toBe("politics");
     expect(inserted?.listingFeePaid).toBe(true);
     expect(inserted?.creatorId).toBeNull();
