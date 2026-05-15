@@ -24,8 +24,8 @@ export default async function ProtectedLayout({ children }: { children: React.Re
           position: "sticky",
           top: 0,
           zIndex: 50,
-          borderBottom: "1px solid rgba(255,255,255,0.07)",
-          background: "rgba(8,11,15,0.85)",
+          borderBottom: "1px solid var(--nav-border)",
+          background: "var(--nav-bg)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
         }}
@@ -48,7 +48,7 @@ export default async function ProtectedLayout({ children }: { children: React.Re
                 fontFamily: "var(--font-heading, 'Outfit', sans-serif)",
                 fontWeight: 800,
                 fontSize: "1.25rem",
-                color: "var(--color-text-primary)",
+                color: "var(--logo-text)",
                 letterSpacing: "-0.02em",
               }}
             >
@@ -110,7 +110,10 @@ export default async function ProtectedLayout({ children }: { children: React.Re
       <style>{`
         .nav-link:hover {
           color: var(--color-green) !important;
-          background: rgba(196,255,0,0.06);
+          background: rgba(74,138,0,0.07);
+        }
+        html[data-theme="dark"] .nav-link:hover {
+          background: rgba(196,255,0,0.07);
         }
       `}</style>
 
