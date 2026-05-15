@@ -1,0 +1,84 @@
+import Anthropic from "@anthropic-ai/sdk";
+
+export interface PolymarketMatch {
+  polyQuestion: string;
+  polyYesPercent: number;
+  polyUrl: string;
+}
+
+interface PolymarketMarket {
+  question: string;
+  outcomePrices: string;
+  slug?: string;
+  conditionId?: string;
+}
+
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+export async function findPolymarketMatch(
+  marketTitle: string
+): Promise<PolymarketMatch | null> {
+  let results: PolymarketMarket[] = [];
+  try {
+    const res = await fetch(
+      `https://gamma-api.polymarket.com/markets?search=${encodeURIComponent(marketTitle)}&limit=5&active=true`,
+      { next: { revalidate: 300 } }
+    );
+    if (!res.ok) return null;
+    results = await res.json();
+  } catch {
+    return null;
+  }
+
+  if (!Array.isArray(results) || results.length === 0) return null;
+
+  let parsed: { match: number | null };
+  try {
+    const response = await anthropic.messages.create({
+      model: "claude-sonnet-4-6",
+      max_tokens: 64,
+      system: "You match prediction market questions. Return valid JSON only. No markdown.",
+      messages: [
+        {
+          role: "user",
+          content: `VenlaxIQ market: "${marketTitle}"
+
+Polymarket candidates:
+${results.map((m, i) => `${i}: ${m.question}`).join("\n")}
+
+Which index (0-${results.length - 1}) best matches with >70% conceptual similarity?
+Return {"match":<index>} or {"match":null} if no good match.`,
+        },
+      ],
+    });
+
+    const block = response.content[0];
+    if (!block || block.type !== "text") return null;
+    parsed = JSON.parse(block.text);
+  } catch {
+    return null;
+  }
+
+  if (parsed.match === null || parsed.match === undefined) return null;
+
+  const matched = results[parsed.match];
+  if (!matched) return null;
+
+  let polyYesPercent = 50;
+  try {
+    const prices: string[] = JSON.parse(matched.outcomePrices);
+    polyYesPercent = Math.round(parseFloat(prices[0]) * 100);
+    if (isNaN(polyYesPercent)) return null;
+  } catch {
+    return null;
+  }
+
+  const slug = matched.slug ?? matched.conditionId ?? "";
+  if (!slug) return null;
+
+  return {
+    polyQuestion: matched.question,
+    polyYesPercent,
+    polyUrl: `https://polymarket.com/event/${slug}`,
+  };
+}

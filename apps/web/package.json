@@ -8,10 +8,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.26.1",
     "@tanstack/react-query": "^5.0.0",
     "@tanstack/react-query-devtools": "^5.0.0",
-    "@venlaxiq/ui": "workspace:*",
     "@venlaxiq/shared": "workspace:*",
+    "@venlaxiq/ui": "workspace:*",
     "clsx": "^2.1.0",
     "next": "^15.0.0",
     "react": "^18.3.0",
