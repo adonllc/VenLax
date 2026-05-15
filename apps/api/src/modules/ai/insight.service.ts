@@ -187,6 +187,12 @@ Return JSON only — one of:
     return;
   }
 
+  const closesAt = new Date(parsed.closesAt);
+  if (isNaN(closesAt.getTime())) {
+    console.error("[market-gen] Claude returned invalid closesAt date:", parsed.closesAt);
+    return;
+  }
+
   const validCategories = ["sports", "politics", "open"] as const;
   const category = validCategories.includes(parsed.category) ? parsed.category : "open";
 
@@ -197,8 +203,8 @@ Return JSON only — one of:
       category,
       resolutionCriteria: String(parsed.resolutionCriteria),
       resolutionSource: String(parsed.resolutionSource ?? "News sources").slice(0, 200),
-      closesAt: new Date(parsed.closesAt),
-      resolvesAt: new Date(parsed.closesAt),
+      closesAt,
+      resolvesAt: closesAt,
       status: "open",
       lmsrLiquidity: 100,
       listingFeePaid: true,
