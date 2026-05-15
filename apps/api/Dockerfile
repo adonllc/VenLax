@@ -31,12 +31,17 @@ RUN pnpm deploy --filter api --prod /deploy
 FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
-RUN apk add --no-cache wget && addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
+RUN npm install -g pnpm@9 && \
+    apk add --no-cache wget && \
+    addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
 # pnpm deploy output: real files, no symlinks, workspace deps included
 COPY --from=builder --chown=nodejs:nodejs /deploy/node_modules ./node_modules
 COPY --from=builder --chown=nodejs:nodejs /deploy/dist ./dist
 COPY --from=builder --chown=nodejs:nodejs /deploy/package.json ./package.json
 COPY --from=builder --chown=nodejs:nodejs /app/apps/api/src/db/migrations ./migrations
+COPY --from=builder --chown=nodejs:nodejs /app/apps/api/src ./src
+COPY --from=builder --chown=nodejs:nodejs /app/apps/api/scripts ./scripts
+COPY --from=builder --chown=nodejs:nodejs /app/packages/shared ./packages/shared
 USER nodejs
 EXPOSE 3001
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
