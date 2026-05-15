@@ -112,3 +112,100 @@ Respond with JSON only:
     sentimentScore,
   });
 }
+
+async function fetchTopHeadlines(): Promise<string[]> {
+  const apiKey = process.env.NEWSAPI_KEY;
+  if (!apiKey) return [];
+  try {
+    const res = await fetch(
+      `https://newsapi.org/v2/top-headlines?language=en&pageSize=10&apiKey=${apiKey}`
+    );
+    const data = await res.json() as any;
+    return (data.articles ?? []).map((a: any) => a.title as string).filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
+export async function generateAndStoreMarket(db: DB): Promise<void> {
+  const headlines = await fetchTopHeadlines();
+  if (headlines.length === 0) return;
+
+  const openMarkets = await db.query.markets.findMany({
+    where: eq(markets.status, "open"),
+    columns: { title: true },
+  });
+  const existingTitles = openMarkets.map((m) => m.title);
+
+  const today = new Date();
+  const defaultClosesAt = new Date(today.getTime() + 21 * 24 * 60 * 60 * 1000).toISOString();
+
+  const response = await claude.messages.create({
+    model: "claude-sonnet-4-6",
+    max_tokens: 512,
+    system:
+      "You are a prediction market operator. Analyze news headlines and generate one new binary prediction market question. Return valid JSON only. No markdown.",
+    messages: [
+      {
+        role: "user",
+        content: `Today's top news headlines:
+${headlines.map((h, i) => `${i + 1}. ${h}`).join("\n")}
+
+Existing open markets — do NOT create a market covering these topics:
+${existingTitles.length > 0 ? existingTitles.map((t) => `- ${t}`).join("\n") : "None"}
+
+Pick the single most interesting headline that forms a clear binary YES/NO prediction market. If any headline's topic overlaps >70% conceptually with an existing market, skip it. If no good candidate exists, set skip to true.
+
+Today: ${today.toISOString().split("T")[0]}
+Default closesAt if no specific date known: ${defaultClosesAt}
+
+Return JSON only — one of:
+{"skip":false,"title":"Will X do Y by [date]?","description":"2-3 sentence context.","category":"sports"|"politics"|"open","resolutionCriteria":"Exact verifiable YES condition.","resolutionSource":"Reuters","closesAt":"<ISO 8601>"}
+{"skip":true,"skipReason":"<reason>"}`,
+      },
+    ],
+  });
+
+  const block = response.content[0];
+  if (!block || block.type !== "text") return;
+
+  let parsed: any;
+  try {
+    parsed = JSON.parse(block.text);
+  } catch {
+    console.error("[market-gen] Claude returned invalid JSON");
+    return;
+  }
+
+  if (parsed.skip === true) {
+    console.log("[market-gen] Skipped:", parsed.skipReason);
+    return;
+  }
+
+  if (!parsed.title || !parsed.description || !parsed.resolutionCriteria || !parsed.closesAt) {
+    console.error("[market-gen] Claude response missing required fields");
+    return;
+  }
+
+  const validCategories = ["sports", "politics", "open"] as const;
+  const category = validCategories.includes(parsed.category) ? parsed.category : "open";
+
+  try {
+    await db.insert(markets).values({
+      title: String(parsed.title).slice(0, 200),
+      description: String(parsed.description),
+      category,
+      resolutionCriteria: String(parsed.resolutionCriteria),
+      resolutionSource: String(parsed.resolutionSource ?? "News sources").slice(0, 200),
+      closesAt: new Date(parsed.closesAt),
+      resolvesAt: new Date(parsed.closesAt),
+      status: "open",
+      lmsrLiquidity: 100,
+      listingFeePaid: true,
+      creatorId: null,
+    });
+    console.log("[market-gen] Created market:", parsed.title);
+  } catch (err) {
+    console.error("[market-gen] DB insert failed:", err);
+  }
+}
