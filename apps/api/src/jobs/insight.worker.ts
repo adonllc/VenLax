@@ -3,7 +3,7 @@ import { redisConnection } from "../queue";
 import { db } from "../db";
 import { markets } from "../db/schema";
 import { eq } from "drizzle-orm";
-import { generateAndStoreSignal } from "../modules/ai/insight.service";
+import { generateAndStoreSignal, generateAndStoreMarket } from "../modules/ai/insight.service";
 
 const insightQueue = new Queue("insight-generation", { connection: redisConnection });
 
@@ -28,6 +28,8 @@ export const insightWorker = new Worker(
     for (const market of openMarkets) {
       await generateAndStoreSignal(db, market.id);
     }
+
+    await generateAndStoreMarket(db);
 
     return { processed: openMarkets.length };
   },
