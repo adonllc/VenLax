@@ -4,6 +4,8 @@ import { serverFetchPublic } from "@/lib/server-api";
 import { ProbabilityBar, MarketStatusChip, CategoryPill } from "@venlaxiq/ui";
 import type { MarketCategory, MarketStatus } from "@venlaxiq/ui";
 import { ForecastEntryIsland } from "./ForecastEntryIsland";
+import { findPolymarketMatch } from "@/lib/polymarket";
+import { PolymarketComparisonCard } from "./PolymarketComparisonCard";
 
 interface MarketDetail {
   id: string;
@@ -53,6 +55,7 @@ export default async function MarketDetailPage({ params }: PageProps) {
   const prob = Math.round(
     (market.qYes / Math.max(market.qYes + market.qNo, 1)) * 100
   );
+  const polyMatch = await findPolymarketMatch(market.title).catch(() => null);
 
   return (
     <div className="min-h-screen bg-surface">
@@ -77,6 +80,16 @@ export default async function MarketDetailPage({ params }: PageProps) {
           </div>
           <ProbabilityBar yesProb={prob} />
         </div>
+
+        {/* Polymarket comparison widget */}
+        {polyMatch && (
+          <PolymarketComparisonCard
+            polyQuestion={polyMatch.polyQuestion}
+            polyYesPercent={polyMatch.polyYesPercent}
+            venlaxYesPercent={prob}
+            polyUrl={polyMatch.polyUrl}
+          />
+        )}
 
         {/* Forecast entry island (client component) */}
         <ForecastEntryIsland
