@@ -60,6 +60,7 @@ Return {"match":<index>} or {"match":null} if no good match.`,
   }
 
   if (parsed.match === null || parsed.match === undefined) return null;
+  if (parsed.match < 0 || parsed.match >= results.length) return null;
 
   const matched = results[parsed.match];
   if (!matched) return null;
@@ -67,6 +68,7 @@ Return {"match":<index>} or {"match":null} if no good match.`,
   let polyYesPercent = 50;
   try {
     const prices: string[] = JSON.parse(matched.outcomePrices);
+    if (!prices.length) return null;
     polyYesPercent = Math.round(parseFloat(prices[0]) * 100);
     if (isNaN(polyYesPercent)) return null;
   } catch {
