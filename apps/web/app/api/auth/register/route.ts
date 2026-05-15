@@ -13,8 +13,7 @@ export async function POST(request: NextRequest) {
     let data: unknown;
     try {
       data = await res.json();
-    } catch (err) {
-      console.error("[register] res.json() failed:", err);
+    } catch {
       return NextResponse.json({ error: "API unavailable" }, { status: 502 });
     }
     if (!res.ok) return NextResponse.json(data, { status: res.status });
@@ -28,8 +27,7 @@ export async function POST(request: NextRequest) {
       maxAge: 60 * 60 * 24 * 7,
     });
     return response;
-  } catch (err) {
-    console.error("[register] outer catch:", err);
+  } catch {
     return NextResponse.json({ error: "Registration failed" }, { status: 500 });
   }
 }
