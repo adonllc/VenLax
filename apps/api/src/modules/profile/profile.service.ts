@@ -12,6 +12,7 @@ export async function getPublicProfile(userId: string, viewerId?: string) {
       xpLevel: users.xpLevel,
       xpTotal: users.xpTotal,
       reputationScore: users.reputationScore,
+      theme: users.theme,
       createdAt: users.createdAt,
     })
     .from(users)
@@ -37,4 +38,8 @@ export async function getPublicProfile(userId: string, viewerId?: string) {
 
 export async function updateOwnProfile(userId: string, input: { username?: string; avatarUrl?: string }) {
   await db.update(users).set({ ...input, updatedAt: new Date() }).where(eq(users.id, userId));
+}
+
+export async function updateUserTheme(userId: string, theme: "dark" | "light") {
+  await db.update(users).set({ theme, updatedAt: new Date() }).where(eq(users.id, userId));
 }

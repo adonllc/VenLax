@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import Link from "next/link";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const navLinks = [
   { href: "/markets", label: "Markets" },
@@ -95,14 +96,13 @@ export default async function ProtectedLayout({ children }: { children: React.Re
                 textDecoration: "none",
                 padding: "0.375rem 0.75rem",
                 borderRadius: "8px",
-                marginLeft: "0.25rem",
-                border: "1px solid rgba(255,255,255,0.08)",
                 transition: "all 0.2s",
               }}
               className="nav-link"
             >
               Settings
             </Link>
+            <ThemeToggle />
           </div>
         </div>
       </nav>

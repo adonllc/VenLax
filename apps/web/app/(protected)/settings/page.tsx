@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { useThemeMode } from "@/providers/ThemeProvider";
 
 function SettingsSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -26,6 +28,7 @@ function SettingsSection({ title, children }: { title: string; children: React.R
 export default function SettingsPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const { theme } = useThemeMode();
 
   async function handleLogout() {
     setLoading(true);
@@ -50,6 +53,18 @@ export default function SettingsPage() {
       </h1>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        <SettingsSection title="Appearance">
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.25rem 0" }}>
+            <div>
+              <p style={{ fontSize: "0.875rem", color: "var(--color-text-primary)", fontWeight: 500 }}>Theme</p>
+              <p style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", marginTop: "2px" }}>
+                Currently: <strong>{theme === "dark" ? "Dark" : "Light (Frosted Mint)"}</strong>
+              </p>
+            </div>
+            <ThemeToggle />
+          </div>
+        </SettingsSection>
+
         <SettingsSection title="Account">
           <Link
             href="/settings/subscription"

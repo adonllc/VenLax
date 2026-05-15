@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { authenticate } from "../../plugins/authenticate";
-import { getPublicProfile, updateOwnProfile } from "./profile.service";
+import { getPublicProfile, updateOwnProfile, updateUserTheme } from "./profile.service";
 
 export async function profileRoutes(app: FastifyInstance) {
   app.get("/profile/me", { preHandler: [authenticate] }, async (request, reply) => {
@@ -26,5 +26,15 @@ export async function profileRoutes(app: FastifyInstance) {
     const input = request.body as { username?: string; avatarUrl?: string };
     await updateOwnProfile(userId, input);
     return reply.send({ ok: true });
+  });
+
+  app.patch("/profile/theme", { preHandler: [authenticate] }, async (request, reply) => {
+    const userId = (request as any).user.sub;
+    const { theme } = request.body as { theme: string };
+    if (theme !== "dark" && theme !== "light") {
+      return reply.code(400).send({ error: "theme must be 'dark' or 'light'" });
+    }
+    await updateUserTheme(userId, theme);
+    return reply.send({ ok: true, theme });
   });
 }
