@@ -9,6 +9,7 @@ interface MarketSummary {
   title: string;
   category: string;
   status: string;
+  source?: string;
   qYes: number;
   qNo: number;
   closesAt: string;
@@ -56,9 +57,16 @@ function MarketCard({ market }: { market: MarketSummary }) {
         }}
         className="market-card"
       >
-        <p style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--color-green)", marginBottom: "0.5rem" }}>
-          {market.category}
-        </p>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
+          <p style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--color-green)", margin: 0 }}>
+            {market.category}
+          </p>
+          {market.source === "ai" && (
+            <span style={{ fontSize: "0.55rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#080B0F", background: "var(--color-green)", borderRadius: "3px", padding: "1px 5px" }}>
+              AI
+            </span>
+          )}
+        </div>
         <p style={{ fontSize: "0.875rem", fontWeight: 600, color: "var(--color-text-primary)", lineHeight: 1.45, marginBottom: "0.875rem", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
           {market.title}
         </p>
