@@ -26,7 +26,7 @@ function StatPill({ label, value, accent }: { label: string; value: string | num
   );
 }
 
-function MarketTile({ id, category, title, closesAt }: { id: string; category: string; title: string; closesAt: string }) {
+function MarketTile({ id, category, title, closesAt, source }: { id: string; category: string; title: string; closesAt: string; source?: string }) {
   return (
     <Link href={`/markets/${id}`} style={{ textDecoration: "none", display: "block" }}>
       <div
@@ -38,6 +38,11 @@ function MarketTile({ id, category, title, closesAt }: { id: string; category: s
           cursor: "pointer",
         }}
       >
+        {source === "ai" && (
+          <span style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#080B0F", background: "var(--color-green)", borderRadius: "4px", padding: "1px 5px", display: "inline-block", marginBottom: "4px" }}>
+            AI
+          </span>
+        )}
         <p style={{ fontSize: "0.65rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--color-green)", marginBottom: "0.5rem" }}>{category}</p>
         <p style={{ fontSize: "0.875rem", fontWeight: 600, color: "var(--color-text-primary)", lineHeight: 1.45, marginBottom: "0.625rem", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{title}</p>
         <p style={{ fontSize: "0.7rem", color: "var(--color-text-secondary)" }}>
@@ -150,7 +155,7 @@ export default function HomePage() {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "0.875rem" }}>
           {markets?.markets?.map((m) => (
-            <MarketTile key={m.id} id={m.id} category={m.category} title={m.title} closesAt={m.closesAt} />
+            <MarketTile key={m.id} id={m.id} category={m.category} title={m.title} closesAt={m.closesAt} source={m.source} />
           ))}
           {!markets?.markets?.length && (
             <p style={{ fontSize: "0.875rem", color: "var(--color-text-secondary)" }}>No open markets yet</p>

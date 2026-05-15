@@ -51,6 +51,9 @@ export const adminApi = {
   resolveMarket: (id: string, outcome: "yes" | "no") =>
     adminFetch<any>(`/admin/markets/${id}/resolve`, { method: "PATCH", body: JSON.stringify({ outcome }) }),
 
+  generateMarket: () =>
+    adminFetch<any>("/admin/markets/generate", { method: "POST" }),
+
   adjustFP: (data: any) =>
     adminFetch<any>("/admin/fp/adjust", { method: "POST", body: JSON.stringify(data) }),
 
