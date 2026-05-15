@@ -68,7 +68,7 @@ export default function LoginPage() {
       {/* Card */}
       <div
         className="glass rounded-2xl p-7"
-        style={{ boxShadow: "0 8px 40px rgba(0,0,0,0.5)" }}
+        style={{ boxShadow: "0 8px 40px rgba(0,0,0,0.15)" }}
       >
         <h2
           style={{
@@ -104,8 +104,8 @@ export default function LoginPage() {
               required
               style={{
                 width: "100%",
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.1)",
+                background: "var(--color-surface-2)",
+                border: "1px solid var(--color-border)",
                 borderRadius: "10px",
                 padding: "0.75rem 1rem",
                 fontSize: "0.875rem",
@@ -114,7 +114,7 @@ export default function LoginPage() {
                 transition: "border-color 0.2s",
               }}
               onFocus={(e) => (e.currentTarget.style.borderColor = "var(--color-green)")}
-              onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)")}
+              onBlur={(e) => (e.currentTarget.style.borderColor = "var(--color-border)")}
             />
           </div>
 
@@ -139,8 +139,8 @@ export default function LoginPage() {
               required
               style={{
                 width: "100%",
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.1)",
+                background: "var(--color-surface-2)",
+                border: "1px solid var(--color-border)",
                 borderRadius: "10px",
                 padding: "0.75rem 1rem",
                 fontSize: "0.875rem",
@@ -149,7 +149,7 @@ export default function LoginPage() {
                 transition: "border-color 0.2s",
               }}
               onFocus={(e) => (e.currentTarget.style.borderColor = "var(--color-green)")}
-              onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)")}
+              onBlur={(e) => (e.currentTarget.style.borderColor = "var(--color-border)")}
             />
           </div>
 

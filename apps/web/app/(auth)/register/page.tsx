@@ -6,8 +6,8 @@ import Link from "next/link";
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.1)",
+  background: "var(--color-surface-2)",
+  border: "1px solid var(--color-border)",
   borderRadius: "10px",
   padding: "0.75rem 1rem",
   fontSize: "0.875rem",
@@ -43,7 +43,7 @@ function Field({
         required={required}
         minLength={minLength}
         maxLength={maxLength}
-        style={{ ...inputStyle, borderColor: focused ? "var(--color-green)" : "rgba(255,255,255,0.1)" }}
+        style={{ ...inputStyle, borderColor: focused ? "var(--color-green)" : "var(--color-border)" }}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
       />
@@ -99,7 +99,7 @@ export default function RegisterPage() {
       </div>
 
       {/* Card */}
-      <div className="glass rounded-2xl p-7" style={{ boxShadow: "0 8px 40px rgba(0,0,0,0.5)" }}>
+      <div className="glass rounded-2xl p-7" style={{ boxShadow: "0 8px 40px rgba(0,0,0,0.15)" }}>
         <h2 style={{ fontFamily: "var(--font-heading, 'Outfit', sans-serif)", fontWeight: 700, fontSize: "1.25rem", color: "var(--color-text-primary)", marginBottom: "1.5rem" }}>
           Create account
         </h2>
