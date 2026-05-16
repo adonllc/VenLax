@@ -4,7 +4,10 @@ import { eq } from "drizzle-orm";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const { authenticator } = require("otplib") as { authenticator: { verify: (o: { token: string; secret: string }) => boolean; generateSecret: () => string } };
+const { generateSecret: otpGenerateSecret, verify: otpVerify } = require("otplib") as {
+  generateSecret: () => string;
+  verify: (o: { token: string; secret: string }) => Promise<{ valid: boolean }>;
+};
 import jwt from "jsonwebtoken";
 
 const scryptAsync = promisify(scrypt);
@@ -58,8 +61,8 @@ export async function adminVerify2fa(input: { partialToken: string; totpCode: st
   });
   if (!admin || !admin.totpSecret) throw { statusCode: 401, message: "2FA not configured" };
 
-  const isValid = authenticator.verify({ token: input.totpCode, secret: admin.totpSecret });
-  if (!isValid) throw { statusCode: 401, message: "Invalid 2FA code" };
+  const result = await otpVerify({ token: input.totpCode, secret: admin.totpSecret });
+  if (!result.valid) throw { statusCode: 401, message: "Invalid 2FA code" };
 
   const token = jwt.sign(
     { adminId: admin.id, email: admin.email, role: admin.role },
@@ -76,7 +79,7 @@ export async function seedAdmin(email: string, password: string): Promise<string
   if (existing) return existing.totpSecret ?? "already-seeded";
 
   const passwordHash = await hashPassword(password);
-  const totpSecret = authenticator.generateSecret();
+  const totpSecret = otpGenerateSecret();
 
   await db.insert(adminUsers).values({ email: normalizedEmail, passwordHash, totpSecret, role: "superadmin" });
 

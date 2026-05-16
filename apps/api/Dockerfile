@@ -31,7 +31,7 @@ RUN pnpm deploy --filter api --prod /deploy
 FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
-RUN npm install -g pnpm@9 && \
+RUN npm install -g pnpm@9 tsx && \
     apk add --no-cache wget && \
     addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
 # pnpm deploy output: real files, no symlinks, workspace deps included
