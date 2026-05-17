@@ -9,7 +9,7 @@ async function adminFetch<T>(path: string, options?: RequestInit): Promise<T> {
     ...options,
     cache: "no-store",
     headers: {
-      "Content-Type": "application/json",
+      ...(options?.body ? { "Content-Type": "application/json" } : {}),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options?.headers,
     },
