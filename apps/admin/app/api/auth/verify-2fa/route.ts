@@ -12,10 +12,13 @@ export async function POST(request: NextRequest) {
     });
     const data = await res.json();
     if (!res.ok) return NextResponse.json(data, { status: res.status });
+    const isHttps =
+      request.headers.get("x-forwarded-proto") === "https" ||
+      request.nextUrl.protocol === "https:";
     const response = NextResponse.json({ ok: true }, { status: 200 });
     response.cookies.set("admin_token", data.token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: isHttps,
       sameSite: "strict",
       path: "/",
       maxAge: 60 * 60 * 8,

@@ -9,10 +9,11 @@ export default function TwoFAPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const verified = useRef(false);
 
   useEffect(() => {
     inputRef.current?.focus();
-    if (!sessionStorage.getItem("admin_partial_token")) {
+    if (!verified.current && !sessionStorage.getItem("admin_partial_token")) {
       router.replace("/login");
     }
   }, [router]);
@@ -30,9 +31,9 @@ export default function TwoFAPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Invalid code");
+      verified.current = true;
       sessionStorage.removeItem("admin_partial_token");
-      router.refresh();
-      router.push("/dashboard");
+      window.location.href = "/dashboard";
     } catch (err: any) {
       setError(err.message);
       setCode("");
