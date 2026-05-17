@@ -31,6 +31,7 @@ export default function TwoFAPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Invalid code");
       sessionStorage.removeItem("admin_partial_token");
+      router.refresh();
       router.push("/dashboard");
     } catch (err: any) {
       setError(err.message);
