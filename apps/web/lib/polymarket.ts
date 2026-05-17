@@ -13,7 +13,19 @@ interface PolymarketMarket {
   conditionId?: string;
 }
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const useOpenRouter = !!process.env.OPENROUTER_API_KEY;
+const anthropic = new Anthropic(
+  useOpenRouter
+    ? {
+        apiKey: process.env.OPENROUTER_API_KEY ?? "",
+        baseURL: "https://openrouter.ai/api/v1",
+        defaultHeaders: { "HTTP-Referer": "https://venlaxiq.com", "X-Title": "VenlaxIQ" },
+      }
+    : { apiKey: process.env.ANTHROPIC_API_KEY }
+);
+const POLY_MODEL = useOpenRouter
+  ? (process.env.AI_MODEL ?? "meta-llama/llama-3.3-70b-instruct")
+  : "claude-sonnet-4-6";
 
 export async function findPolymarketMatch(
   marketTitle: string
@@ -35,7 +47,7 @@ export async function findPolymarketMatch(
   let parsed: { match: number | null };
   try {
     const response = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
+      model: POLY_MODEL,
       max_tokens: 64,
       system: "You match prediction market questions. Return valid JSON only. No markdown.",
       messages: [
