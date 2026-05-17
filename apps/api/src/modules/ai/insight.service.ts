@@ -11,7 +11,7 @@ export async function getLatestSignal(db: DB, marketId: string) {
 }
 
 async function fetchHeadlines(query: string): Promise<string[]> {
-  const apiKey = process.env.NEWSAPI_KEY ?? process.env.news_api;
+  const apiKey = process.env.NEWSAPI_KEY;
   if (!apiKey) return [];
   const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&apiKey=${apiKey}&pageSize=5&language=en`;
   try {
@@ -114,7 +114,7 @@ Respond with JSON only:
 }
 
 async function fetchTopHeadlines(): Promise<string[]> {
-  const apiKey = process.env.NEWSAPI_KEY ?? process.env.news_api;
+  const apiKey = process.env.NEWSAPI_KEY;
   if (!apiKey) return [];
   try {
     const res = await fetch(
