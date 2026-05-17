@@ -128,7 +128,9 @@ async function fetchTopHeadlines(): Promise<string[]> {
 }
 
 export async function generateAndStoreMarket(db: DB): Promise<void> {
+  console.log("[market-gen] start — NEWSAPI_KEY set:", !!process.env.NEWSAPI_KEY, "ANTHROPIC_API_KEY set:", !!process.env.ANTHROPIC_API_KEY);
   const headlines = await fetchTopHeadlines();
+  console.log("[market-gen] headlines fetched:", headlines.length);
   if (headlines.length === 0) return;
 
   const openMarkets = await db.query.markets.findMany({
