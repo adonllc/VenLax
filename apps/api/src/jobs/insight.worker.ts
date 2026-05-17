@@ -16,6 +16,8 @@ export async function scheduleInsightJobs(): Promise<void> {
       jobId: "insight-repeatable",
     }
   );
+  // Fire immediately on startup so first run doesn't wait 6h
+  await insightQueue.add("generate-startup", {});
 }
 
 export const insightWorker = new Worker(
