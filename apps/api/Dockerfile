@@ -12,6 +12,7 @@ RUN pnpm install --frozen-lockfile --filter api... && \
     pnpm install --frozen-lockfile --filter @venlaxiq/shared
 
 # ── Stage 2: build ────────────────────────────────────────────────────────────
+# cache-bust: 2026-05-17
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
